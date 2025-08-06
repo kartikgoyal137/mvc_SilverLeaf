@@ -4,15 +4,43 @@ import (
     "log"
    "github.com/kartikgoyal137/MVC/pkg/api"
    "github.com/kartikgoyal137/MVC/pkg/models"
+	"os/signal"
+    "os"
+    "fmt"
+	"syscall"
     _ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-    database.SetupDatabase()
-
-    server := api.NewAPIServer(":8080", database.Db)
-    if err:=server.Run(); err!=nil {
+    err := models.InitDatabase()
+    if err!=nil {
         log.Fatal(err)
     }
+
+    server := api.NewAPIServer(":8080", models.DB)
+
+    go func() {
+        if err:=server.Run(); err!=nil {
+        log.Fatal(err)
+    }
+    }()
+
+    quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	fmt.Println("Shutting down server...")
     
+    // ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	// defer cancel()
+
+	// if err := server.Shutdown(ctx); err != nil {
+	// 	log.Printf("Server forced to shutdown: %v", err)
+	// }
+
+	// if err := models.CloseDatabase(); err != nil {
+	// 	log.Printf("Error closing database: %v", err)
+	// }
+
+	fmt.Println("Server exited gracefully")
 }

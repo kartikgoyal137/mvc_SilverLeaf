@@ -1,17 +1,16 @@
-package database
+package models
 
 import (
 	"database/sql"
 	"os"
 	"github.com/go-sql-driver/mysql"
 	"fmt"
-	"log"
 	"github.com/joho/godotenv"
 )
 
-var Db *sql.DB
+var DB *sql.DB
 
-func SetupDatabase() {
+func InitDatabase() error {
     
     
 	godotenv.Load()
@@ -24,15 +23,17 @@ func SetupDatabase() {
     cfg.DBName = "velvet_plate"
 
 	var err error
-    Db, err = sql.Open("mysql", cfg.FormatDSN())
+    DB, err = sql.Open("mysql", cfg.FormatDSN())
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
-	pingErr := Db.Ping()
+	pingErr := DB.Ping()
     if pingErr != nil {
-        log.Fatal(pingErr)
+        return err
     }
     fmt.Println("Connected!")
+
+    return nil
 }
 

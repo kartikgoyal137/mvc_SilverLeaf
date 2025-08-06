@@ -27,6 +27,10 @@ type Order struct {
 	TableNo      *int      `json:"table_no"`
 }
 
+type CreateOrder struct {
+	
+}
+
 type Serve struct {
 	OrderID   int `json:"order_id"`
 	ProductID int `json:"product_id"`
@@ -52,3 +56,18 @@ type User struct {
 	PasswordHash string `json:"password_hash"`
 	Role         string `json:"role"` // "administrator", "customer", or "chef"
 }
+
+type RegisterUser struct {
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	Contact      string `json:"contact"`
+	Email        string `json:"email"`
+	Password string `json:"password"`
+}
+
+type UserStore interface {
+	GetUserByEmail(email string) (*User, error)
+	CreateNewUser(user User) error
+	GetUserById(id int) (*User, error)
+}
+

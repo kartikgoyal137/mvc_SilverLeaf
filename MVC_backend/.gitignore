@@ -31,4 +31,4 @@ go.work.sum
 # .idea/
 # .vscode/
 
-./database/velvet.sql
+test.sql
