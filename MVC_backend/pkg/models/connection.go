@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -9,10 +9,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var db *sql.DB
+var Db *sql.DB
 
-func main() {
-
+func SetupDatabase() {
+    
+    
 	godotenv.Load()
 
 	cfg := mysql.NewConfig()
@@ -23,12 +24,12 @@ func main() {
     cfg.DBName = "velvet_plate"
 
 	var err error
-    db, err = sql.Open("mysql", cfg.FormatDSN())
+    Db, err = sql.Open("mysql", cfg.FormatDSN())
     if err != nil {
         log.Fatal(err)
     }
 
-	pingErr := db.Ping()
+	pingErr := Db.Ping()
     if pingErr != nil {
         log.Fatal(pingErr)
     }

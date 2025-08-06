@@ -1,0 +1,54 @@
+package types
+
+import "time"
+
+type Category struct {
+	CategoryID   int    `json:"category_id"`
+	CategoryName string `json:"category_name"`
+	Description  string `json:"description"`
+	ImageURL     string `json:"image_url"`
+}
+
+type MenuItem struct {
+	ProductID      int     `json:"product_id"`
+	ProductName    string  `json:"product_name"`
+	CategoryID     *int    `json:"category_id"`
+	Price          float64 `json:"price"`
+	ImageURL       string  `json:"image_url"`
+	IngredientList string  `json:"ingredient_list"`
+}
+
+type Order struct {
+	OrderID      int       `json:"order_id"`
+	UserID       *int      `json:"user_id"`
+	Status       string    `json:"status"` // "Yet to start", "Cooking", "Completed"
+	CreatedAt    time.Time `json:"created_at"`
+	Instructions string    `json:"instructions"`
+	TableNo      *int      `json:"table_no"`
+}
+
+type Serve struct {
+	OrderID   int `json:"order_id"`
+	ProductID int `json:"product_id"`
+	Quantity  int `json:"quantity"`
+}
+
+type Payment struct {
+	TransactionID int       `json:"transaction_id"`
+	OrderID       *int      `json:"order_id"`
+	UserID        *int      `json:"user_id"`
+	FoodTotal     float64   `json:"food_total"`
+	CreatedAt     time.Time `json:"created_at"`
+	Tip           *int      `json:"tip"`
+	Status        string    `json:"status"` // "Pending" or "Completed"
+}
+
+type User struct {
+	UserID       int    `json:"user_id"`
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	Contact      string `json:"contact"`
+	Email        string `json:"email"`
+	PasswordHash string `json:"password_hash"`
+	Role         string `json:"role"` // "administrator", "customer", or "chef"
+}
