@@ -55,8 +55,8 @@ func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
 	return u, nil
 }
 
-func (s *UserDB) CreateNewUser(user types.RegisterUser) error {
-	_, err := s.db.Exec("INSERT INTO users (firstName, lastName,contact, email, password) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Contact ,user.Email, user.Password)
+func (s *UserDB) CreateNewUser(user types.User) error {
+	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, contact, email, password) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Contact ,user.Email, user.PasswordHash)
 
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 	return u, nil
 }
 
-func (s *UserDB) PaymentsById(id int) (*types.Payment, error) {
+func (s *UserDB) PaymentsByUserId(id int) (*types.Payment, error) {
 	rows, err := s.db.Query("SELECT * FROM payments WHERE user_id = ?", id)
 	if err!=nil {
 		return nil, err

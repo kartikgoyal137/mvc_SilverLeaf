@@ -5,15 +5,15 @@ import (
 	"github.com/kartikgoyal137/MVC/pkg/types"
 )
 
-type OrderStore struct {
+type OrderDB struct {
 	db *sql.DB
 }
 
-func (s *OrderStore) NewStore(db *sql.DB) *OrderStore {
-	return &OrderStore{db : db}
+func NewOrderDB(db *sql.DB) *OrderDB {
+	return &OrderDB{db : db}
 }
 
-func (s *UserDB) GetAllOrders() ([]types.Order, error) {
+func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
 	rows, err := s.db.Query("SELECT * FROM users")
 	if err!=nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (s *UserDB) GetAllOrders() ([]types.Order, error) {
 	return order, nil
 }
 
-func (s *OrderStore) OrdersByStatus(status string) ([]types.Order ,error) {
+func (s *OrderDB) OrdersByStatus(status string) ([]types.Order ,error) {
 	rows, err := s.db.Query("SELECT * FROM orders WHERE status = ?", status)
 	if err!=nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (s *OrderStore) OrdersByStatus(status string) ([]types.Order ,error) {
 }
 
 
-func (s *OrderStore) OrdersByUserId(id int) ([]types.Order, error) {
+func (s *OrderDB) OrdersByUserId(id int) ([]types.Order, error) {
 
 	rows, err := s.db.Query("SELECT * FROM orders WHERE user_id = ?", id)
 	if err!=nil {
@@ -76,7 +76,7 @@ func (s *OrderStore) OrdersByUserId(id int) ([]types.Order, error) {
 	return ord, nil
 }
 
-func (s *OrderStore) UpdateOrder(order types.CreateOrder) error {
+func (s *OrderDB) UpdateOrder(order types.CreateOrder) error {
 	_ , err := s.db.Query("UPDATE orders SET status = ?, instructions = ?, table_no = ? WHERE order_id = ?;", "Yet to Start", order.Instructions, order.TableNo, order.OrderId)
 	if err!=nil {
 		return err
@@ -84,7 +84,7 @@ func (s *OrderStore) UpdateOrder(order types.CreateOrder) error {
 	return nil
 }
 
-func (s *OrderStore) CreateEmptyOrder(user types.User) error {
+func (s *OrderDB) CreateEmptyOrder(user types.User) error {
 	_ , err := s.db.Query("INSERT INTO orders (user_id) VALUES (?);", user.UserID)
 	if err!=nil {
 		return err

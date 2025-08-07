@@ -5,15 +5,15 @@ import (
 	"github.com/kartikgoyal137/MVC/pkg/types"
 )
 
-type MenuStore struct {
+type MenuDB struct {
 	db *sql.DB
 }
 
-func NewStore(db *sql.DB) *MenuStore {
-	return &MenuStore{db: db}
+func NewMenuDB(db *sql.DB) *MenuDB {
+	return &MenuDB{db: db}
 }
 
-func (s *MenuStore) ListOfCategory(id int) ([]types.Category ,error) {
+func (s *MenuDB) ListOfCategory(id int) ([]types.Category ,error) {
 	rows, err := s.db.Query("SELECT * from categories;")
 	if err!=nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (s *MenuStore) ListOfCategory(id int) ([]types.Category ,error) {
 	return cat, nil
 }
 
-func (s *MenuStore) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
+func (s *MenuDB) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	rows, err := s.db.Query("SELECT * from menu WHERE category_id =  ?;", id)
 	if err!=nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (s *MenuStore) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	return items , nil
 }
 
-func (s *OrderStore) OrderIDinServe(id int) ([]types.MenuItem, error) {
+func (s *OrderDB) OrderIDinServe(id int) ([]types.MenuItem, error) {
 
 	rows, err := s.db.Query("SELECT * FROM serve WHERE order_id = ?", id)
 	if err!=nil {

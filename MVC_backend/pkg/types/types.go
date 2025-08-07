@@ -66,7 +66,7 @@ type RegisterUser struct {
 	LastName     string `json:"last_name"`
 	Contact      string `json:"contact"`
 	Email        string `json:"email"`
-	Password string `json:"password"`
+	Password string     `json:"password"`
 }
 
 type LoginUser struct {
@@ -76,7 +76,16 @@ type LoginUser struct {
 
 type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
-	CreateNewUser(user RegisterUser) error
+	CreateNewUser(user User) error
 	GetUserById(id int) (*User, error)
 }
+
+type OrderStore interface {
+	GetAllOrders() ([]Order, error)
+	OrdersByStatus(status string) ([]Order, error)
+	OrdersByUserId(id int) ([]Order, error)
+	UpdateOrder(order CreateOrder) error
+	CreateEmptyOrder(user User) error
+}
+
 

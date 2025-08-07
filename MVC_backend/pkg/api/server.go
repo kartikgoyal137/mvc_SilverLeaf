@@ -27,10 +27,12 @@ func (s *APIServer) Run() error {
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
 	userStore := models.NewUserDB(models.DB)
-	userHandler := user.NewHandler(userStore)
+	userHandler := controller.NewUserHandler(userStore)
 	userHandler.RegisterRoutes(subrouter)
 
-
+	orderStore := models.NewOrderDB(models.DB)
+	orderHandler := controller.NewOrderHandler(orderStore)
+	orderHandler.RegisterRoutes(subrouter)
 
 	
 	log.Printf("Starting server on %s\n", s.addr)
