@@ -32,7 +32,7 @@ func (s *MenuStore) ListOfCategory(id int) ([]types.Category ,error) {
 	return cat, nil
 }
 
-func (s *MenuStore) GetCategoryById(id int) ([]types.MenuItem ,error) {
+func (s *MenuStore) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	rows, err := s.db.Query("SELECT * from menu WHERE category_id =  ?;", id)
 	if err!=nil {
 		return nil, err
@@ -49,6 +49,28 @@ func (s *MenuStore) GetCategoryById(id int) ([]types.MenuItem ,error) {
 	}
 
 	return items , nil
+}
+
+func (s *OrderStore) OrderIDinServe(id int) ([]types.MenuItem, error) {
+
+	rows, err := s.db.Query("SELECT * FROM serve WHERE order_id = ?", id)
+	if err!=nil {
+		return nil, err
+	}
+
+	var item []types.MenuItem
+
+	for rows.Next() {
+		o, err := scanRowIntoItem(rows)
+		if err!=nil {
+			return nil, err
+		}
+		item = append(item, *o)
+	}
+
+	
+
+	return item, nil
 }
 
 

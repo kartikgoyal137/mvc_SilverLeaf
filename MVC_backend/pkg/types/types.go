@@ -28,7 +28,11 @@ type Order struct {
 }
 
 type CreateOrder struct {
-	
+	OrderId      int        `json:"order_id"`
+	Dishes       []MenuItem `json:"dishes"`
+	TableNo      *int       `json:"table_no"`
+	Tip          *int       `json:"tip"`
+	Instructions string     `json:"instructions"`
 }
 
 type Serve struct {
@@ -62,6 +66,11 @@ type RegisterUser struct {
 	LastName     string `json:"last_name"`
 	Contact      string `json:"contact"`
 	Email        string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginUser struct {
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 

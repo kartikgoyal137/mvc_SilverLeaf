@@ -1,12 +1,13 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/kartikgoyal137/MVC/pkg/middleware"
-	"github.com/kartikgoyal137/MVC/pkg/utils"
 	"github.com/kartikgoyal137/MVC/pkg/types"
+	"github.com/kartikgoyal137/MVC/pkg/utils"
 )
 
 type Handler struct {
@@ -24,10 +25,21 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 
 
 
-
-
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
-	middleware.CreateToken("kartik")
+	var user types.LoginUser
+	if err:=utils.ParseJSON(r, &user); err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	//validate here
+
+	u, err := h.store.GetUserByEmail(user.Email)
+	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
+		return
+	}
+
+	
 }
 
 func (h *Handler) handleSignup(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +48,5 @@ func (h *Handler) handleSignup(w http.ResponseWriter, r *http.Request) {
 	utils.WriteError(w, http.StatusBadRequest, err)
 	} 
 	
-	h.store.CreateNewUser(payload)
-	
+	h.store.CreateNewUser(payload) 
 }

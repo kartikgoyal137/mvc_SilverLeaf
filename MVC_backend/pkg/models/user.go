@@ -14,6 +14,25 @@ func NewUserDB(db *sql.DB) *UserDB {
 	return &UserDB{db: db}
 }
 
+func (s *UserDB) GetAllUsers() ([]types.User, error) {
+	rows, err := s.db.Query("SELECT * FROM users")
+	if err!=nil {
+		return nil, err
+	}
+
+	var people []types.User
+
+	for rows.Next() {
+		u, err := scanRowIntoUser(rows)
+		if err!=nil {
+			return nil, err
+		}
+		people = append(people, *u)
+	}
+
+	return people, nil
+}
+
 func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
 	rows, err := s.db.Query("SELECT * FROM users WHERE email = ?", email)
 	if err!=nil {
@@ -37,7 +56,7 @@ func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
 }
 
 func (s *UserDB) CreateNewUser(user types.RegisterUser) error {
-	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)", user.FirstName, user.LastName, user.Email, user.Password)
+	_, err := s.db.Exec("INSERT INTO users (firstName, lastName,contact, email, password) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Contact ,user.Email, user.Password)
 
 	if err != nil {
 		return err
@@ -68,8 +87,22 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 	return u, nil
 }
 
-func (s *UserDB) PaymentsById() {
+func (s *UserDB) PaymentsById(id int) (*types.Payment, error) {
+	rows, err := s.db.Query("SELECT * FROM payments WHERE user_id = ?", id)
+	if err!=nil {
+		return nil, err
+	}
 
+	p := new(types.Payment)
+
+	for rows.Next() {
+		p, err= scanRowIntoPayment(rows)
+		if err!=nil {
+			return nil, err
+		}
+	}
+
+	return p, nil
 }
 
 
@@ -91,4 +124,24 @@ func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	}
 
 	return user, nil
+}
+
+func scanRowIntoPayment(rows *sql.Rows) (*types.Payment, error) {
+	pay := new(types.Payment)
+
+	err := rows.Scan(
+		&pay.TransactionID,
+		&pay.OrderID,
+		&pay.UserID,
+		&pay.FoodTotal,
+		&pay.CreatedAt,
+		&pay.Tip,
+		&pay.Status,
+	)
+
+	if err!=nil {
+		return nil,err
+	}
+
+	return pay, nil
 }
