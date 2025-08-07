@@ -31,4 +31,4 @@ go.work.sum
 # .idea/
 # .vscode/
 
-test.sql
+/database/test.sql

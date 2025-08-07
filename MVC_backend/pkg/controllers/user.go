@@ -35,4 +35,7 @@ func (h *Handler) handleSignup(w http.ResponseWriter, r *http.Request) {
 	if err:=utils.ParseJSON(r, &payload); err!=nil {
 	utils.WriteError(w, http.StatusBadRequest, err)
 	} 
+	
+	h.store.CreateNewUser(payload)
+	
 }
