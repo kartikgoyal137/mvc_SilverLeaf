@@ -13,7 +13,7 @@ func NewMenuDB(db *sql.DB) *MenuDB {
 	return &MenuDB{db: db}
 }
 
-func (s *MenuDB) ListOfCategory(id int) ([]types.Category ,error) {
+func (s *MenuDB) ListOfCategory() ([]types.Category ,error) {
 	rows, err := s.db.Query("SELECT * from categories;")
 	if err!=nil {
 		return nil, err

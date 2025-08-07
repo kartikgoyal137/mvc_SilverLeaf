@@ -88,4 +88,9 @@ type OrderStore interface {
 	CreateEmptyOrder(user User) error
 }
 
+type MenuStore interface {
+	ListOfCategory() ([]Category ,error)
+	GetMenuByCategoryId(id int) ([]MenuItem ,error)
+}
+
 

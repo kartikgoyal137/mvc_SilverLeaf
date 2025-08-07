@@ -31,12 +31,20 @@ func (s *APIServer) Run() error {
 	userHandler.RegisterRoutes(subrouter)
 
 	orderStore := models.NewOrderDB(models.DB)
-	orderHandler := controller.NewOrderHandler(orderStore)
+	orderHandler := controller.NewOrderHandler(orderStore, userStore)
 	orderHandler.RegisterRoutes(subrouter)
+
+	menuStore := models.NewMenuDB(models.DB)
+	menuHandler := controller.NewMenuHandler(menuStore, userStore)
+	menuHandler.RegisterRoutes(subrouter)
 
 	
 	log.Printf("Starting server on %s\n", s.addr)
+	server := &http.Server{
+		Addr:    s.addr,
+		Handler: router,
+	}
 
-	return http.ListenAndServe(s.addr, router)
+	return server.ListenAndServe()
 }
 
