@@ -37,3 +37,11 @@ func InitDatabase() error {
     return nil
 }
 
+func CloseDatabase() error {
+    if DB != nil {
+		fmt.Println("Closing database connection...")
+		return DB.Close()
+	}
+	return nil
+}
+

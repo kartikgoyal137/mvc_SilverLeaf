@@ -6,6 +6,8 @@ import (
    "github.com/kartikgoyal137/MVC/pkg/models"
 	"os/signal"
     "os"
+    "time"
+    "context"
     "fmt"
 	"syscall"
     _ "github.com/go-sql-driver/mysql"
@@ -31,16 +33,16 @@ func main() {
 
 	fmt.Println("Shutting down server...")
     
-    // ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	// defer cancel()
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-	// if err := server.Shutdown(ctx); err != nil {
-	// 	log.Printf("Server forced to shutdown: %v", err)
-	// }
+	if err := server.Server.Shutdown(ctx); err != nil {
+		log.Printf("Server forced to shutdown: %v", err)
+	}
 
-	// if err := models.CloseDatabase(); err != nil {
-	// 	log.Printf("Error closing database: %v", err)
-	// }
+	if err := models.CloseDatabase(); err != nil {
+		log.Printf("Error closing database: %v", err)
+	}
 
 	fmt.Println("Server exited gracefully")
 }

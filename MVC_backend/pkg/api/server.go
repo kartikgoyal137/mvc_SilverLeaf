@@ -12,7 +12,7 @@ import (
 type APIServer struct {
 	addr string
 	db *sql.DB
-	server *http.Server
+	Server *http.Server
 } 
 
 func NewAPIServer(addr string, db *sql.DB) *APIServer {
@@ -40,11 +40,11 @@ func (s *APIServer) Run() error {
 
 	
 	log.Printf("Starting server on %s\n", s.addr)
-	server := &http.Server{
+	s.Server = &http.Server{
 		Addr:    s.addr,
 		Handler: router,
 	}
 
-	return server.ListenAndServe()
+	return s.Server.ListenAndServe()
 }
 
