@@ -18,6 +18,7 @@ func (s *MenuDB) ListOfCategory() ([]types.Category ,error) {
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var cat []types.Category
 
@@ -37,6 +38,7 @@ func (s *MenuDB) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var items []types.MenuItem
 
@@ -49,28 +51,6 @@ func (s *MenuDB) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	}
 
 	return items , nil
-}
-
-func (s *OrderDB) OrderIDinServe(id int) ([]types.MenuItem, error) {
-
-	rows, err := s.db.Query("SELECT * FROM serve WHERE order_id = ?", id)
-	if err!=nil {
-		return nil, err
-	}
-
-	var item []types.MenuItem
-
-	for rows.Next() {
-		o, err := scanRowIntoItem(rows)
-		if err!=nil {
-			return nil, err
-		}
-		item = append(item, *o)
-	}
-
-	
-
-	return item, nil
 }
 
 

@@ -13,11 +13,34 @@ func NewOrderDB(db *sql.DB) *OrderDB {
 	return &OrderDB{db : db}
 }
 
-func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
-	rows, err := s.db.Query("SELECT * FROM users")
+func (s *OrderDB) OrderIDinServe(id int) ([]types.MenuItem, error) {
+
+	rows, err := s.db.Query("SELECT * FROM serve WHERE order_id = ?", id)
 	if err!=nil {
 		return nil, err
 	}
+
+	var item []types.MenuItem
+
+	for rows.Next() {
+		o, err := scanRowIntoItem(rows)
+		if err!=nil {
+			return nil, err
+		}
+		item = append(item, *o)
+	}
+
+	
+
+	return item, nil
+}
+
+func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
+	rows, err := s.db.Query("SELECT * FROM orders")
+	if err!=nil {
+		return nil, err
+	}
+	defer rows.Close()
 
 	var order []types.Order
 
@@ -37,6 +60,7 @@ func (s *OrderDB) OrdersByStatus(status string) ([]types.Order ,error) {
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var ord []types.Order
 
@@ -60,6 +84,7 @@ func (s *OrderDB) OrdersByUserId(id int) ([]types.Order, error) {
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var ord []types.Order
 
@@ -77,7 +102,7 @@ func (s *OrderDB) OrdersByUserId(id int) ([]types.Order, error) {
 }
 
 func (s *OrderDB) UpdateOrder(order types.CreateOrder) error {
-	_ , err := s.db.Query("UPDATE orders SET status = ?, instructions = ?, table_no = ? WHERE order_id = ?;", "Yet to Start", order.Instructions, order.TableNo, order.OrderId)
+	_ , err := s.db.Exec("UPDATE orders SET status = ?, instructions = ?, table_no = ? WHERE order_id = ?;", "Yet to Start", order.Instructions, order.TableNo, order.OrderId)
 	if err!=nil {
 		return err
 	}

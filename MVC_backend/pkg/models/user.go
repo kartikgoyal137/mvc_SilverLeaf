@@ -19,6 +19,7 @@ func (s *UserDB) GetAllUsers() ([]types.User, error) {
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var people []types.User
 
@@ -38,19 +39,20 @@ func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
-	u := new(types.User)
+	var u *types.User
 
 	for rows.Next() {
-		u, err= scanRowIntoUser(rows)
+		u, err = scanRowIntoUser(rows)
 		if err!=nil {
 			return nil, err
 		}
 	}
 
-	if u.UserID == 0 {
-		return nil, fmt.Errorf("user not found")
-	}
+	if u == nil {
+        return nil, fmt.Errorf("user not found")
+    }
 
 	return u, nil
 }
@@ -70,6 +72,7 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	u := new(types.User)
 
@@ -87,22 +90,25 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 	return u, nil
 }
 
-func (s *UserDB) PaymentsByUserId(id int) (*types.Payment, error) {
+func (s *UserDB) PaymentsByUserId(id int) ([]types.Payment, error) {
 	rows, err := s.db.Query("SELECT * FROM payments WHERE user_id = ?", id)
 	if err!=nil {
 		return nil, err
 	}
+	defer rows.Close()
 
-	p := new(types.Payment)
+	var pay []types.Payment
 
 	for rows.Next() {
-		p, err= scanRowIntoPayment(rows)
+		p, err := scanRowIntoPayment(rows)
 		if err!=nil {
 			return nil, err
 		}
+		pay = append(pay, *p)
+
 	}
 
-	return p, nil
+	return pay, nil
 }
 
 
