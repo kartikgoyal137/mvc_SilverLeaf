@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/gorilla/mux"
-	"github.com/kartikgoyal137/MVC/pkg/middleware"
+	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
 )

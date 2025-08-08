@@ -3,13 +3,11 @@ package controller
 import (
 	"fmt"
 	"net/http"
-	"os"
-
+	"strconv"
 	"github.com/gorilla/mux"
-	"github.com/kartikgoyal137/MVC/pkg/middleware"
+	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-
 )
 
 type UserHandler struct {
@@ -28,7 +26,7 @@ func (h *UserHandler) RegisterRoutes(router *mux.Router) {
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.store)
 
 	router.HandleFunc("/admin/allusers", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/admin/userstatus/{role}", jwtAdminHandler2).Methods("POST")
+	router.HandleFunc("/admin/userstatus/{role}/{user}", jwtAdminHandler2).Methods("POST")
 	router.HandleFunc("/login", h.handleLogin).Methods("POST")
 	router.HandleFunc("/signup", h.handleSignup).Methods("POST")
 	router.HandleFunc("/userinfo", auth.JWTauth(h.HandleGetUser , h.store)).Methods("GET")
@@ -53,8 +51,7 @@ func (h *UserHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	secret := os.Getenv("TOKENKEY")
-	token, err := auth.CreateJWT(secret, u.UserID)
+	token, err := auth.CreateJWT(u.UserID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -122,15 +119,18 @@ func (h *UserHandler) HandleGetAllUsers(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *UserHandler) ChangeUserStatus(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	userID := ctx.Value(auth.UserKey).(int)
-
 	vars := mux.Vars(r)
 	role := vars["role"]
-
-	err := h.store.ChangeUserStatus(userID, role)
+	userid := vars["user"]
+	user, err := strconv.Atoi(userid)
 	if err!=nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	err2 := h.store.ChangeUserStatus(user, role)
+	if err2!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err2)
 		return
 	}
 

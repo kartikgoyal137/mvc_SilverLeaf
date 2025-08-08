@@ -103,29 +103,6 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 	return u, nil
 }
 
-func (s *UserDB) UpdateUserById(id int) (*types.User, error) {
-	rows, err := s.db.Query("UPDATE users SET first_name = ?, last_name=?, ", id)
-	if err!=nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	u := new(types.User)
-
-	for rows.Next() {
-		u, err= scanRowIntoUser(rows)
-		if err!=nil {
-			return nil, err
-		}
-	}
-
-	if u.UserID == 0 {
-		return nil, fmt.Errorf("user not found")
-	}
-
-	return u, nil
-}
-
 
 func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	user := new(types.User)

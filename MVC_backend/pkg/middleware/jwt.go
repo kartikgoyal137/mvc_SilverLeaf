@@ -49,7 +49,7 @@ func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFu
    }
 }
 
-func CreateJWT(secret string ,userID int) (string, error) {
+func CreateJWT(userID int) (string, error) {
 	var secretKey = os.Getenv("TOKENKEY")
    if secretKey == "" {
 		return "", fmt.Errorf("TOKENKEY environment variable not set")
