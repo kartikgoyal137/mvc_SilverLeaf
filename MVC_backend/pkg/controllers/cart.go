@@ -20,6 +20,7 @@ func NewCartHandler(store types.CartStore, userStore types.UserStore) *CartHandl
 
 func (h *CartHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/addtocart", auth.JWTauth(h.AddToCartHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/editcart", auth.JWTauth(h.UpdateCartHandler, h.userStore)).Methods("POST")
 	router.HandleFunc("/getcart/{orderid}", auth.JWTauth(h.GetCartItemsHandler, h.userStore)).Methods("GET")
 }
 
@@ -38,6 +39,23 @@ func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 			utils.WriteError(w, http.StatusBadRequest, err2)
 			return
 		}
+    }
+
+    utils.WriteJSON(w, http.StatusCreated, nil)
+}
+
+func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) {
+
+    var item types.CartItem
+    if err := utils.ParseJSON(r, &item); err != nil {
+        utils.WriteError(w, http.StatusBadRequest, err)
+        return
+    }
+
+    err := h.store.UpdateCartItemQuantity(item)
+    if err != nil { 
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
     }
 
     utils.WriteJSON(w, http.StatusCreated, nil)
