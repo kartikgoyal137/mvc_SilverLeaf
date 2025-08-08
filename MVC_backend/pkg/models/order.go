@@ -124,6 +124,16 @@ func (s *OrderDB) CreateEmptyOrder(userId int) (int,error) {
     return int(id), nil
 }
 
+func (s *OrderDB) ChangeStatus(orderId int, status string) error {
+	_ , err := s.db.Exec("UPDATE orders SET status = ? WHERE order_id = ?;", status, orderId)
+	if err!=nil {
+		return err
+	}
+
+    return nil
+}
+
+
 func scanRowIntoOrder(rows *sql.Rows) (*types.Order, error) {
 	order := new(types.Order)
 

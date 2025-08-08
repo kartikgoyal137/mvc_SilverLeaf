@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"github.com/kartikgoyal137/MVC/pkg/types"
+	"time"
 )
 
 type PaymentDB struct {
@@ -56,8 +57,8 @@ func (s *PaymentDB) GetAllPayments() ([]types.Payment, error) {
 	return pay, nil
 }
 
-func (s *PaymentDB) CreateNewPayment(pay *types.Payment) error {
-	_ , err := s.db.Query("INSERT INTO payments (order_id, user_id, food_total, created_at, tip) VALUES (?, ?, ?, ?, ?);", pay.OrderID, pay.UserID, pay.FoodTotal, pay.CreatedAt, pay.Tip)
+func (s *PaymentDB) CreateNewPayment(pay *types.MakePayment) error {
+	_ , err := s.db.Query("INSERT INTO payments (order_id, user_id, food_total, created_at, tip) VALUES (?, ?, ?, ?, ?);", pay.OrderID, pay.UserID, pay.FoodTotal, time.Now(), pay.Tip)
 
 	if err!=nil {
 		return err
@@ -65,6 +66,16 @@ func (s *PaymentDB) CreateNewPayment(pay *types.Payment) error {
 
 	return nil
 }
+
+func (s *OrderDB) ChangePayStatus(orderId int, status string) error {
+	_ , err := s.db.Exec("UPDATE payments SET status = ? WHERE order_id = ?;", status, orderId)
+	if err!=nil {
+		return err
+	}
+
+    return nil
+}
+
 
 
 func scanRowIntoPayment(rows *sql.Rows) (*types.Payment, error) {

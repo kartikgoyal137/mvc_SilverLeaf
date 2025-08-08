@@ -80,6 +80,16 @@ type LoginUser struct {
 	Password string `json:"password"`
 }
 
+type ChangeOrderStatusPayload struct {
+	OrderID int    `json:"order_id"`
+	Status  string `json:"status"`
+}
+
+type ChangePaymentStatusPayload struct {
+	OrderId int    `json:"order_id"`
+	Status  string       `json:"status"`
+}
+
 type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
 	CreateNewUser(user User) error
@@ -90,6 +100,8 @@ type UserStore interface {
 type PaymentStore interface {
 	PaymentsByUserId(id int) ([]Payment, error)
 	GetAllPayments() ([]Payment, error)
+	CreateNewPayment(pay *MakePayment) error
+	ChangePayStatus(orderId int, status string) error
 }
 
 type OrderStore interface {
@@ -99,6 +111,7 @@ type OrderStore interface {
 	CreateOrder(order CreateOrder) error
 	GetOneOrder(id int) ([]CartItem, error)
 	CreateEmptyOrder(userId int) (int,error)
+	ChangeStatus(orderId int, status string) error
 }
 
 type MenuStore interface {

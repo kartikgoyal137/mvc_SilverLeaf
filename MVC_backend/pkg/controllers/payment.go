@@ -20,6 +20,8 @@ func NewPayHandler(store types.PaymentStore, userstore types.UserStore) *PayHand
 func (h *PayHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/admin/allpayments", auth.JWTauth(auth.AdminAuth(h.HandleGetAllPayments,h.userStore), h.userStore)).Methods("GET")
 	router.HandleFunc("/mypayments", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
+	router.HandleFunc("/admin/paystatus", auth.JWTauth(auth.AdminAuth(h.ChangePaymentStatus, h.userStore), h.userStore)).Methods("POST")
+
 }
 
 func (h *PayHandler) HandleGetAllPayments(w http.ResponseWriter, r *http.Request) {
@@ -44,4 +46,34 @@ func (h *PayHandler) HandleGetPayByUser(w http.ResponseWriter, r *http.Request) 
 	}
 
 	utils.WriteJSON(w, http.StatusOK, payments)
+}
+
+func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
+	
+	var payload types.MakePayment
+	if err:=utils.ParseJSON(r, &payload); err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	} 
+
+	err := h.store.CreateNewPayment(&payload)
+
+	utils.WriteJSON(w, http.StatusOK, err)
+}
+
+func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request) {
+
+	var payload types.ChangePaymentStatusPayload
+	if err:=utils.ParseJSON(r, &payload); err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	err := h.store.ChangePayStatus(payload.OrderId, payload.Status)
+	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, err)
 }
