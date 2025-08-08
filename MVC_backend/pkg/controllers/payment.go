@@ -17,11 +17,19 @@ func NewPayHandler(store types.PaymentStore, userstore types.UserStore) *PayHand
 	return &PayHandler{store: store, userStore: userstore}
 }
 
+
 func (h *PayHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/admin/allpayments", auth.JWTauth(auth.AdminAuth(h.HandleGetAllPayments,h.userStore), h.userStore)).Methods("GET")
+	adminHandler1 := auth.AdminAuth(h.HandleGetAllPayments, h.userStore)
+	jwtProtectedAdminHandler1 := auth.JWTauth(adminHandler1, h.userStore)
+	adminHandler2 := auth.AdminAuth(h.ChangePaymentStatus, h.userStore)
+	jwtProtectedAdminHandler2 := auth.JWTauth(adminHandler2, h.userStore)
+
+
+	router.HandleFunc("/admin/allpayments", jwtProtectedAdminHandler1).Methods("GET")
+	router.HandleFunc("/admin/paymentstatus", jwtProtectedAdminHandler2).Methods("POST")
 	router.HandleFunc("/mypayments", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
-	router.HandleFunc("/payment", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("GET")
-	router.HandleFunc("/admin/paystatus", auth.JWTauth(auth.AdminAuth(h.ChangePaymentStatus, h.userStore), h.userStore)).Methods("POST")
+	router.HandleFunc("/payment", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("POST")
+	
 }
 
 func (h *PayHandler) HandleGetAllPayments(w http.ResponseWriter, r *http.Request) {
@@ -75,5 +83,5 @@ func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, err)
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
 }

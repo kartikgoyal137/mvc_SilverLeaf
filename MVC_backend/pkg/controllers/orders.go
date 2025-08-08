@@ -19,10 +19,16 @@ func NewOrderHandler(store types.OrderStore, userStore types.UserStore) *OrderHa
 }
 
 func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
+	ChefHandler1 := auth.ChefAuth(h.HandleGetAllOrders, h.userStore)
+	jwtProtectedChefHandler1 := auth.JWTauth(ChefHandler1, h.userStore)
+	ChefHandler2 := auth.ChefAuth(h.ChangeOrderStatus, h.userStore)
+	jwtProtectedChefHandler2 := auth.JWTauth(ChefHandler2, h.userStore)
+
+
 	router.HandleFunc("/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
-	router.HandleFunc("/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("GET")
-	router.HandleFunc("/allorders", auth.JWTauth(auth.ChefAuth(h.HandleGetAllOrders,h.userStore), h.userStore)).Methods("GET")
-	router.HandleFunc("/admin/orderstatus", auth.JWTauth(auth.ChefAuth(h.ChangeOrderStatus, h.userStore), h.userStore)).Methods("POST")
+	router.HandleFunc("/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/chef/allorders", jwtProtectedChefHandler1).Methods("GET")
+	router.HandleFunc("/chef/orderstatus", jwtProtectedChefHandler2).Methods("POST")
 }
 
 
@@ -49,6 +55,7 @@ func (h *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Request
 	orderID, err := h.store.CreateEmptyOrder(userID)
 
 	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
@@ -80,5 +87,5 @@ func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, err)
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
 }

@@ -82,7 +82,10 @@ func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) 
 func (h *CartHandler) GetCartItemsHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
-    orderID, _ := strconv.Atoi(vars["orderid"])
+    orderID, err := strconv.Atoi(vars["orderid"])
+    if err!= nil {
+        utils.WriteError(w, http.StatusBadRequest, err)
+    }
    
     items, err := h.store.GetCartItems(int(orderID))
     if err != nil {
