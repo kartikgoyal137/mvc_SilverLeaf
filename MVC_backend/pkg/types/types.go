@@ -109,7 +109,6 @@ type OrderStore interface {
 	OrdersByStatus(status string) ([]Order, error)
 	OrdersByUserId(id int) ([]Order, error)
 	CreateOrder(order CreateOrder) error
-	GetOneOrder(id int) ([]CartItem, error)
 	CreateEmptyOrder(userId int) (int,error)
 	ChangeStatus(orderId int, status string) error
 }

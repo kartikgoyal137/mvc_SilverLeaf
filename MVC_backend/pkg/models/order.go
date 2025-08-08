@@ -13,28 +13,6 @@ func NewOrderDB(db *sql.DB) *OrderDB {
 	return &OrderDB{db : db}
 }
 
-func (s *OrderDB) GetOneOrder(id int) ([]types.CartItem, error) {
-
-	rows, err := s.db.Query("SELECT * FROM serve WHERE order_id = ?", id)
-	if err!=nil {
-		return nil, err
-	}
-
-	var item []types.CartItem
-
-	for rows.Next() {
-		o, err := scanRowIntoServe(rows)
-		if err!=nil {
-			return nil, err
-		}
-		item = append(item, *o)
-	}
-
-	
-
-	return item, nil
-}
-
 func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
 	rows, err := s.db.Query("SELECT * FROM orders")
 	if err!=nil {

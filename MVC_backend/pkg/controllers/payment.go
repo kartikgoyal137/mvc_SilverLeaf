@@ -65,8 +65,12 @@ func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
 	} 
 
 	err := h.store.CreateNewPayment(&payload)
+	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
 
-	utils.WriteJSON(w, http.StatusOK, err)
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Payment created successfully"})
 }
 
 func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request) {
