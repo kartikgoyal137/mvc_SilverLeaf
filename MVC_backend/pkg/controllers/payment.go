@@ -20,8 +20,8 @@ func NewPayHandler(store types.PaymentStore, userstore types.UserStore) *PayHand
 func (h *PayHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/admin/allpayments", auth.JWTauth(auth.AdminAuth(h.HandleGetAllPayments,h.userStore), h.userStore)).Methods("GET")
 	router.HandleFunc("/mypayments", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
+	router.HandleFunc("/payment", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("GET")
 	router.HandleFunc("/admin/paystatus", auth.JWTauth(auth.AdminAuth(h.ChangePaymentStatus, h.userStore), h.userStore)).Methods("POST")
-
 }
 
 func (h *PayHandler) HandleGetAllPayments(w http.ResponseWriter, r *http.Request) {

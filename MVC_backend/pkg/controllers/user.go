@@ -9,7 +9,7 @@ import (
 	"github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-	"strconv"
+
 )
 
 type UserHandler struct {
@@ -23,6 +23,7 @@ func NewUserHandler(store types.UserStore) *UserHandler {
 func (h *UserHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/login", h.handleLogin).Methods("POST")
 	router.HandleFunc("/signup", h.handleSignup).Methods("POST")
+	router.HandleFunc("/userinfo", auth.JWTauth(h.HandleGetUser , h.store)).Methods("GET")
 }
 
 
@@ -91,18 +92,8 @@ func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	str, ok := vars["userID"]
-	if !ok {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("missing user ID"))
-		return
-	}
-
-	userID, err := strconv.Atoi(str)
-	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid user ID"))
-		return
-	}
+	ctx := r.Context()
+	userID := ctx.Value(auth.UserKey).(int)
 
 	user, err := h.store.GetUserById(userID)
 	if err != nil {
