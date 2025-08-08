@@ -24,9 +24,12 @@ func (h *PayHandler) RegisterRoutes(router *mux.Router) {
 	adminHandler1 := auth.AdminAuth(h.HandleGetAllPayments, h.userStore)
 	jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.userStore)
 
+	adminHandler2 := auth.AdminAuth(h.ChangePaymentStatus, h.userStore)
+	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.userStore)
+
 
 	router.HandleFunc("/admin/allpayments", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/paymentstatus", auth.JWTauth(h.ChangePaymentStatus , h.userStore)).Methods("POST")
+	router.HandleFunc("/admin/paymentstatus", jwtAdminHandler2).Methods("POST")
 	router.HandleFunc("/mypayments", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
 	router.HandleFunc("/api/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal , h.userStore)).Methods("GET")
 	router.HandleFunc("/payment", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("POST")
@@ -95,10 +98,13 @@ func (h *PayHandler) HandleCalculateTotal(w http.ResponseWriter, r *http.Request
 
 	vars := mux.Vars(r)
 	id, ok := vars["order_id"]
-	orderID, _ := strconv.Atoi(id)
-
 	if !ok {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("failed to fetch"))
+		return
+	}
+	orderID, err := strconv.Atoi(id)
+	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 

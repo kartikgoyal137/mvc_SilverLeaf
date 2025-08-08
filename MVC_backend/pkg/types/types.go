@@ -103,7 +103,7 @@ type PaymentStore interface {
 	GetAllPayments() ([]Payment, error)
 	CreateNewPayment(pay *MakePayment) error
 	ChangePayStatus(orderId int, status string) error
-	CalculateTotal(orderId int) (int, error)
+	CalculateTotal(orderId int) (float64, error)
 }
 
 type OrderStore interface {

@@ -58,7 +58,7 @@ func (s *PaymentDB) GetAllPayments() ([]types.Payment, error) {
 }
 
 func (s *PaymentDB) CreateNewPayment(pay *types.MakePayment) error {
-	_ , err := s.db.Query("INSERT INTO payments (order_id, user_id, food_total, created_at, tip) VALUES (?, ?, ?, ?, ?);", pay.OrderID, pay.UserID, pay.FoodTotal, time.Now(), pay.Tip)
+	_ , err := s.db.Exec("INSERT INTO payments (order_id, user_id, food_total, created_at, tip) VALUES (?, ?, ?, ?, ?);", pay.OrderID, pay.UserID, pay.FoodTotal, time.Now(), pay.Tip)
 
 	if err!=nil {
 		return err
