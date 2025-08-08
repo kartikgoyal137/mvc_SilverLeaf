@@ -112,3 +112,5 @@ func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request) {
 
 	utils.WriteJSON(w, http.StatusOK, user)
 }
+
+

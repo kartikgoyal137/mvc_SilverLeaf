@@ -21,6 +21,8 @@ func NewOrderHandler(store types.OrderStore, userStore types.UserStore) *OrderHa
 func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
 	router.HandleFunc("/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/allorders", auth.JWTauth(auth.AdminAuth(h.HandleGetAllOrders,h.userStore), h.userStore)).Methods("GET")
+
 }
 
 
@@ -51,4 +53,15 @@ func (h *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, orderID)
+}
+
+func (h *OrderHandler) HandleGetAllOrders(w http.ResponseWriter, r *http.Request) {
+
+	orders, err := h.store.GetAllOrders()
+	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, orders)
 }
