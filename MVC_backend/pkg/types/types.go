@@ -119,6 +119,8 @@ type OrderStore interface {
 type MenuStore interface {
 	ListOfCategory() ([]Category ,error)
 	GetMenuByCategoryId(id int) ([]MenuItem ,error)
+	AddMenuItem(item *MenuItem) error
+	RemoveMenuItem(productID int) error
 }
 
 type CartStore interface {

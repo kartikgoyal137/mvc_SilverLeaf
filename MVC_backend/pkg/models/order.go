@@ -151,19 +151,3 @@ func scanRowIntoOrder(rows *sql.Rows) (*types.Order, error) {
 
 	return order, nil
 }
-
-func scanRowIntoServe(rows *sql.Rows) (*types.CartItem, error) {
-	order := new(types.CartItem)
-
-	err := rows.Scan(
-		&order.OrderID,
-		&order.ProductID,
-		&order.Quantity,
-	)
-
-	if err!=nil {
-		return nil,err
-	}
-
-	return order, nil
-}

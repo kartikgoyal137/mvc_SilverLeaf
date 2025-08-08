@@ -53,6 +53,22 @@ func (s *MenuDB) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	return items , nil
 }
 
+func (s *MenuDB) AddMenuItem(item *types.MenuItem) error {
+    _, err := s.db.Exec("INSERT INTO menu (product_id, product_name, category_id, price, image_url) VALUES (?, ?, ?, ?, ?)", item.ProductID, item.ProductName, item.CategoryID, item.Price, item.ImageURL)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+func (s *MenuDB) RemoveMenuItem(productID int) error {
+    _, err := s.db.Exec("DELETE FROM menu WHERE product_id = ?", productID)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
 
 func scanRowIntoItem(rows *sql.Rows) (*types.MenuItem, error) {
 	item := new(types.MenuItem)
