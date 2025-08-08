@@ -28,14 +28,13 @@ type Order struct {
 }
 
 type CreateOrder struct {
-	OrderId      int        `json:"order_id"`
-	Dishes       []MenuItem `json:"dishes"`
+	OrderID      int       `json:"order_id"`
 	TableNo      *int       `json:"table_no"`
 	Tip          *int       `json:"tip"`
 	Instructions string     `json:"instructions"`
 }
 
-type Serve struct {
+type CartItem struct {
 	OrderID   int `json:"order_id"`
 	ProductID int `json:"product_id"`
 	Quantity  int `json:"quantity"`
@@ -49,6 +48,13 @@ type Payment struct {
 	CreatedAt     time.Time `json:"created_at"`
 	Tip           *int      `json:"tip"`
 	Status        string    `json:"status"` // "Pending" or "Completed"
+}
+
+type MakePayment struct {
+	OrderID       *int      `json:"order_id"`
+	UserID        *int      `json:"user_id"`
+	FoodTotal     float64   `json:"food_total"`
+	Tip           *int      `json:"tip"`
 }
 
 type User struct {
@@ -78,14 +84,21 @@ type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
 	CreateNewUser(user User) error
 	GetUserById(id int) (*User, error)
+	GetAllUsers() ([]User, error)
+}
+
+type PaymentStore interface {
+	PaymentsByUserId(id int) ([]Payment, error)
+	GetAllPayments() ([]Payment, error)
 }
 
 type OrderStore interface {
 	GetAllOrders() ([]Order, error)
 	OrdersByStatus(status string) ([]Order, error)
 	OrdersByUserId(id int) ([]Order, error)
-	UpdateOrder(order CreateOrder) error
-	CreateEmptyOrder(user User) error
+	CreateOrder(order CreateOrder) error
+	GetOneOrder(id int) ([]CartItem, error)
+	CreateEmptyOrder(userId int) (int,error)
 }
 
 type MenuStore interface {
@@ -93,4 +106,10 @@ type MenuStore interface {
 	GetMenuByCategoryId(id int) ([]MenuItem ,error)
 }
 
+type CartStore interface {
+    AddToCart(place CartItem) error
+    GetCartItems(orderID int) ([]CartItem, error)
+    UpdateCartItemQuantity(place CartItem) error
+    RemoveFromCart(orderID, productID int) error
+}
 

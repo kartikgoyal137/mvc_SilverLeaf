@@ -10,7 +10,7 @@ import (
 
 var DB *sql.DB
 
-func InitDatabase() error {
+func InitDatabase() (*sql.DB,error) {
     
     
 	godotenv.Load()
@@ -25,16 +25,16 @@ func InitDatabase() error {
 	var err error
     DB, err = sql.Open("mysql", cfg.FormatDSN())
     if err != nil {
-        return err
+        return nil, err
     }
 
 	pingErr := DB.Ping()
     if pingErr != nil {
-        return err
+        return nil, err
     }
     fmt.Println("Connected!")
 
-    return nil
+    return DB, nil
 }
 
 func CloseDatabase() error {

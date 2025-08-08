@@ -4,5 +4,4 @@ CREATE TABLE `serve` (
   `quantity` int DEFAULT '0',
   PRIMARY KEY (`order_id`, `product_id`)
 );
-
 CREATE INDEX `product_id` ON `serve` (`product_id`);

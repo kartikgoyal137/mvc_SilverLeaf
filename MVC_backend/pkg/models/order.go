@@ -13,17 +13,17 @@ func NewOrderDB(db *sql.DB) *OrderDB {
 	return &OrderDB{db : db}
 }
 
-func (s *OrderDB) OrderIDinServe(id int) ([]types.MenuItem, error) {
+func (s *OrderDB) GetOneOrder(id int) ([]types.CartItem, error) {
 
 	rows, err := s.db.Query("SELECT * FROM serve WHERE order_id = ?", id)
 	if err!=nil {
 		return nil, err
 	}
 
-	var item []types.MenuItem
+	var item []types.CartItem
 
 	for rows.Next() {
-		o, err := scanRowIntoItem(rows)
+		o, err := scanRowIntoServe(rows)
 		if err!=nil {
 			return nil, err
 		}
@@ -101,20 +101,27 @@ func (s *OrderDB) OrdersByUserId(id int) ([]types.Order, error) {
 	return ord, nil
 }
 
-func (s *OrderDB) UpdateOrder(order types.CreateOrder) error {
-	_ , err := s.db.Exec("UPDATE orders SET status = ?, instructions = ?, table_no = ? WHERE order_id = ?;", "Yet to Start", order.Instructions, order.TableNo, order.OrderId)
+func (s *OrderDB) CreateOrder(order types.CreateOrder) error {
+	_ , err := s.db.Exec("UPDATE orders SET instructions = ?, table_no = ? WHERE order_id = ?;",order.Instructions, order.TableNo, order.OrderID)
 	if err!=nil {
 		return err
 	}
+	
 	return nil
 }
 
-func (s *OrderDB) CreateEmptyOrder(user types.User) error {
-	_ , err := s.db.Query("INSERT INTO orders (user_id) VALUES (?);", user.UserID)
+func (s *OrderDB) CreateEmptyOrder(userId int) (int,error) {
+	result , err := s.db.Exec("INSERT INTO orders (user_id, status, instructions, table_no) VALUES (?, 'Yet to start', NULL, NULL);", userId)
 	if err!=nil {
-		return err
+		return 0,err
 	}
-	return nil
+
+	id, err := result.LastInsertId()
+    if err != nil {
+        return 0, err
+    }
+
+    return int(id), nil
 }
 
 func scanRowIntoOrder(rows *sql.Rows) (*types.Order, error) {
@@ -127,6 +134,22 @@ func scanRowIntoOrder(rows *sql.Rows) (*types.Order, error) {
 		&order.CreatedAt,
 		&order.Instructions,
 		&order.TableNo,
+	)
+
+	if err!=nil {
+		return nil,err
+	}
+
+	return order, nil
+}
+
+func scanRowIntoServe(rows *sql.Rows) (*types.CartItem, error) {
+	order := new(types.CartItem)
+
+	err := rows.Scan(
+		&order.OrderID,
+		&order.ProductID,
+		&order.Quantity,
 	)
 
 	if err!=nil {

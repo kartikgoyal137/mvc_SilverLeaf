@@ -19,7 +19,8 @@ func NewMenuHandler(store types.MenuStore, userStore types.UserStore) *MenuHandl
 }
 
 func (h *MenuHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/category", auth.JWTauth(h.AllCategories, h.userStore)).Methods("POST")
+	router.HandleFunc("/api/category", auth.JWTauth(h.AllCategories, h.userStore)).Methods("GET")
+	router.HandleFunc("/api/menu", auth.JWTauth(h.MenuByCategory, h.userStore)).Methods("GET")
 }
 
 

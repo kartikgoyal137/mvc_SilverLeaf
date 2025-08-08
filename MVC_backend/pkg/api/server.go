@@ -26,16 +26,14 @@ func (s *APIServer) Run() error {
 	router := mux.NewRouter()
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
-	userStore := models.NewUserDB(models.DB)
+	userStore := models.NewUserDB(s.db)
 	userHandler := controller.NewUserHandler(userStore)
 	userHandler.RegisterRoutes(subrouter)
 
-	orderStore := models.NewOrderDB(models.DB)
-	orderHandler := controller.NewOrderHandler(orderStore, userStore)
+	orderHandler := controller.NewOrderHandler(models.NewOrderDB(s.db), userStore)
 	orderHandler.RegisterRoutes(subrouter)
 
-	menuStore := models.NewMenuDB(models.DB)
-	menuHandler := controller.NewMenuHandler(menuStore, userStore)
+	menuHandler := controller.NewMenuHandler(models.NewMenuDB(s.db), userStore)
 	menuHandler.RegisterRoutes(subrouter)
 
 	
@@ -45,6 +43,8 @@ func (s *APIServer) Run() error {
 		Handler: router,
 	}
 
-	return s.Server.ListenAndServe()
+	err := s.Server.ListenAndServe()
+	
+	return err
 }
 

@@ -14,12 +14,13 @@ import (
 )
 
 func main() {
-    err := models.InitDatabase()
+    db, err := models.InitDatabase()
     if err!=nil {
         log.Fatal(err)
     }
+    defer db.Close()
 
-    server := api.NewAPIServer(":8080", models.DB)
+    server := api.NewAPIServer(":8080", db)
 
     go func() {
         if err:=server.Run(); err!=nil {

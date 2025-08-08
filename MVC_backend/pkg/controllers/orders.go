@@ -19,35 +19,36 @@ func NewOrderHandler(store types.OrderStore, userStore types.UserStore) *OrderHa
 }
 
 func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/order", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
+	router.HandleFunc("/api/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
+	router.HandleFunc("/api/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
 }
 
 
 
 func (h *OrderHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
+
 	var order types.CreateOrder
 	if err:=utils.ParseJSON(r, &order); err!=nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	err := h.store.UpdateOrder(order)
+	err := h.store.CreateOrder(order)
 	if err!=nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
+
 }
 
-func (h *OrderHandler) EmptyOrder(w http.ResponseWriter, r *http.Request) {
-	var order types.User
-	if err := h.store.CreateEmptyOrder(order); err!=nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+func (h *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userID := ctx.Value(auth.UserKey).(int)
+	orderID, err := h.store.CreateEmptyOrder(userID)
+
+	if err!=nil {
 		return
 	}
-	
-	utils.WriteJSON(w, http.StatusAccepted, "ok")
-}
 
-func (h *OrderHandler) EditOrder(w http.ResponseWriter, r *http.Request) {
-
+	utils.WriteJSON(w, http.StatusCreated, orderID)
 }

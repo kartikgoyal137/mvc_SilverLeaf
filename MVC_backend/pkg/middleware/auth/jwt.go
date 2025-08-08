@@ -21,12 +21,12 @@ func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFu
       tokenString := utils.GetTokenFromRequest(r)
       token, err := VerifyJWT(tokenString)
       if err!=nil {
-         log.Printf("failed to validate")
+         utils.WriteError(w, http.StatusUnauthorized, err)
          return
       }
 
       if !token.Valid  {
-         log.Printf("Invalid token")
+         utils.WriteError(w, http.StatusUnauthorized, fmt.Errorf("unauthorised access"))
          return
       }
 
@@ -41,7 +41,7 @@ func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFu
 
       u, err := store.GetUserById(userID)
       if err!=nil {
-         log.Printf("failed to fetch user by id")
+         utils.WriteError(w, http.StatusBadRequest, err)
          return
       }
 

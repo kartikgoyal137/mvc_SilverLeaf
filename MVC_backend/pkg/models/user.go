@@ -6,6 +6,8 @@ import (
 	"github.com/kartikgoyal137/MVC/pkg/types"
 )
 
+const userColumns = "user_id, first_name, last_name, contact, email, password_hash, role"
+
 type UserDB struct {
 	db *sql.DB
 }
@@ -15,7 +17,8 @@ func NewUserDB(db *sql.DB) *UserDB {
 }
 
 func (s *UserDB) GetAllUsers() ([]types.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users")
+	query := fmt.Sprintf("SELECT %s FROM users", userColumns)
+	rows, err := s.db.Query(query)
 	if err!=nil {
 		return nil, err
 	}
@@ -90,27 +93,6 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 	return u, nil
 }
 
-func (s *UserDB) PaymentsByUserId(id int) ([]types.Payment, error) {
-	rows, err := s.db.Query("SELECT * FROM payments WHERE user_id = ?", id)
-	if err!=nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var pay []types.Payment
-
-	for rows.Next() {
-		p, err := scanRowIntoPayment(rows)
-		if err!=nil {
-			return nil, err
-		}
-		pay = append(pay, *p)
-
-	}
-
-	return pay, nil
-}
-
 
 func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	user := new(types.User)
@@ -132,22 +114,3 @@ func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	return user, nil
 }
 
-func scanRowIntoPayment(rows *sql.Rows) (*types.Payment, error) {
-	pay := new(types.Payment)
-
-	err := rows.Scan(
-		&pay.TransactionID,
-		&pay.OrderID,
-		&pay.UserID,
-		&pay.FoodTotal,
-		&pay.CreatedAt,
-		&pay.Tip,
-		&pay.Status,
-	)
-
-	if err!=nil {
-		return nil,err
-	}
-
-	return pay, nil
-}
