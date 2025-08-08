@@ -3,11 +3,11 @@ package auth
 import (
 	"context"
 	"fmt"
-	"log"
+
    "github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"os"
-	"strconv"
+	
 	"time"
    "github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
@@ -31,13 +31,9 @@ func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFu
       }
 
       claims := token.Claims.(jwt.MapClaims)
-      str := claims["userID"].(string)
+      userIDfloat := claims["userID"].(float64)
 
-      userID, err := strconv.Atoi(str)
-      if err!=nil {
-         log.Printf("failed to convert")
-         return
-      }
+      userID:= int(userIDfloat)
 
       u, err := store.GetUserById(userID)
       if err!=nil {
@@ -55,13 +51,16 @@ func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFu
 
 func CreateJWT(secret string ,userID int) (string, error) {
 	var secretKey = os.Getenv("TOKENKEY")
+   if secretKey == "" {
+		return "", fmt.Errorf("TOKENKEY environment variable not set")
+	}
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, 
         jwt.MapClaims{ 
-        "user_id": userID, 
+        "userID": userID, 
         "expiresAt": time.Now().Add(time.Hour * 24).Unix(), 
         })
 
-    tokenString, err := token.SignedString(secretKey)
+    tokenString, err := token.SignedString([]byte(secretKey))
     if err != nil {
     return "", err
     }
@@ -71,8 +70,11 @@ func CreateJWT(secret string ,userID int) (string, error) {
 
 func VerifyJWT(tokenString string) (*jwt.Token,error) {
    var secretKey = os.Getenv("TOKENKEY")
+   if secretKey == "" {
+		return nil, fmt.Errorf("TOKENKEY environment variable not set")
+	}
    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-      return secretKey, nil
+      return []byte(secretKey), nil
    })
   
    if err != nil {

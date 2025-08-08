@@ -2,7 +2,7 @@ package controller
 
 import (
 	"net/http"
-
+    "strconv"
 	"github.com/gorilla/mux"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
@@ -19,8 +19,8 @@ func NewCartHandler(store types.CartStore, userStore types.UserStore) *CartHandl
 }
 
 func (h *CartHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/addtocart", auth.JWTauth(h.AddToCartHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/api/addtocart", auth.JWTauth(h.GetCartItemsHandler, h.userStore)).Methods("GET")
+	router.HandleFunc("/addtocart", auth.JWTauth(h.AddToCartHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/getcart/{orderid}", auth.JWTauth(h.GetCartItemsHandler, h.userStore)).Methods("GET")
 }
 
 func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,12 +45,10 @@ func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 
 func (h *CartHandler) GetCartItemsHandler(w http.ResponseWriter, r *http.Request) {
 
-	var orderID int
-    if err := utils.ParseJSON(r, &orderID); err != nil {
-        utils.WriteError(w, http.StatusBadRequest, err)
-        return
-    }
-    items, err := h.store.GetCartItems(orderID)
+	vars := mux.Vars(r)
+    orderID, _ := strconv.Atoi(vars["orderid"])
+   
+    items, err := h.store.GetCartItems(int(orderID))
     if err != nil {
         utils.WriteError(w, http.StatusInternalServerError, err)
         return

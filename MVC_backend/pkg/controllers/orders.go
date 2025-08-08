@@ -19,8 +19,8 @@ func NewOrderHandler(store types.OrderStore, userStore types.UserStore) *OrderHa
 }
 
 func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
-	router.HandleFunc("/api/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
+	router.HandleFunc("/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
 }
 
 

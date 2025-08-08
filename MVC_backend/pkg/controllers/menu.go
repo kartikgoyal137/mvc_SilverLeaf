@@ -2,7 +2,7 @@ package controller
 
 import (
 	"net/http"
-
+	"strconv"
 	"github.com/gorilla/mux"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
@@ -19,8 +19,8 @@ func NewMenuHandler(store types.MenuStore, userStore types.UserStore) *MenuHandl
 }
 
 func (h *MenuHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/category", auth.JWTauth(h.AllCategories, h.userStore)).Methods("GET")
-	router.HandleFunc("/api/menu", auth.JWTauth(h.MenuByCategory, h.userStore)).Methods("GET")
+	router.HandleFunc("/category", auth.JWTauth(h.AllCategories, h.userStore)).Methods("GET")
+	router.HandleFunc("/menu/{id}", auth.JWTauth(h.MenuByCategory, h.userStore)).Methods("GET")
 }
 
 
@@ -36,13 +36,11 @@ func (h *MenuHandler) AllCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
-	var id int
-	if err:=utils.ParseJSON(r, &id); err!=nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
-		return
-	}
+	vars := mux.Vars(r)
+	id := vars["id"]
+	userID, _ := strconv.Atoi(id)
 
-	cat, err := h.store.GetMenuByCategoryId(id)
+	cat, err := h.store.GetMenuByCategoryId(userID)
 	if err!=nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return

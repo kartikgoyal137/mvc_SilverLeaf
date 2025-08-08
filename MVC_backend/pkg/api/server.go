@@ -36,6 +36,9 @@ func (s *APIServer) Run() error {
 	menuHandler := controller.NewMenuHandler(models.NewMenuDB(s.db), userStore)
 	menuHandler.RegisterRoutes(subrouter)
 
+	cartHandler := controller.NewCartHandler(models.NewCartDB(s.db), userStore)
+	cartHandler.RegisterRoutes(subrouter)
+
 	
 	log.Printf("Starting server on %s\n", s.addr)
 	s.Server = &http.Server{

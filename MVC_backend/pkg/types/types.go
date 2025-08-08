@@ -110,6 +110,6 @@ type CartStore interface {
     AddToCart(place CartItem) error
     GetCartItems(orderID int) ([]CartItem, error)
     UpdateCartItemQuantity(place CartItem) error
-    RemoveFromCart(orderID, productID int) error
+    DeleteCartItem(place CartItem) error
 }
 

@@ -61,7 +61,7 @@ func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
 }
 
 func (s *UserDB) CreateNewUser(user types.User) error {
-	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, contact, email, password) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Contact ,user.Email, user.PasswordHash)
+	_, err := s.db.Exec("INSERT INTO users (first_name, last_name, contact, email, password_hash) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Contact ,user.Email, user.PasswordHash)
 
 	if err != nil {
 		return err

@@ -62,7 +62,6 @@ func scanRowIntoItem(rows *sql.Rows) (*types.MenuItem, error) {
 		&item.ProductName,
 		&item.CategoryID,
 		&item.Price,
-		&item.IngredientList,
 		&item.ImageURL,
 	)
 
