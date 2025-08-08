@@ -70,8 +70,41 @@ func (s *UserDB) CreateNewUser(user types.User) error {
 	return nil
 }
 
+func (s *UserDB) ChangeUserStatus(id int, role string) error {
+	_, err := s.db.Exec("UPDATE users SET role = ? WHERE user_id = ?", role,id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *UserDB) GetUserById(id int) (*types.User, error) {
 	rows, err := s.db.Query("SELECT * FROM users WHERE user_id = ?", id)
+	if err!=nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	u := new(types.User)
+
+	for rows.Next() {
+		u, err= scanRowIntoUser(rows)
+		if err!=nil {
+			return nil, err
+		}
+	}
+
+	if u.UserID == 0 {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return u, nil
+}
+
+func (s *UserDB) UpdateUserById(id int) (*types.User, error) {
+	rows, err := s.db.Query("UPDATE users SET first_name = ?, last_name=?, ", id)
 	if err!=nil {
 		return nil, err
 	}

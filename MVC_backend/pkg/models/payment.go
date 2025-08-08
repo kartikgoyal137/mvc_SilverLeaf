@@ -67,7 +67,7 @@ func (s *PaymentDB) CreateNewPayment(pay *types.MakePayment) error {
 	return nil
 }
 
-func (s *OrderDB) ChangePayStatus(orderId int, status string) error {
+func (s *PaymentDB) ChangePayStatus(orderId int, status string) error {
 	_ , err := s.db.Exec("UPDATE payments SET status = ? WHERE order_id = ?;", status, orderId)
 	if err!=nil {
 		return err
@@ -76,6 +76,16 @@ func (s *OrderDB) ChangePayStatus(orderId int, status string) error {
     return nil
 }
 
+func (s *PaymentDB) CalculateTotal(orderId int) (float64, error) {
+    var total float64
+    row := s.db.QueryRow("SELECT SUM(s.quantity * m.price) FROM serve AS s JOIN menu AS m ON s.product_id = m.product_id WHERE s.order_id = ?;", orderId)
+    err := row.Scan(&total)
+    if err != nil {
+        return 0, err
+    }
+	
+    return total, nil
+}
 
 
 func scanRowIntoPayment(rows *sql.Rows) (*types.Payment, error) {

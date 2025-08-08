@@ -33,6 +33,27 @@ func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
 	return order, nil
 }
 
+func (s *OrderDB) GetAllActiveOrders() ([]types.Order, error) {
+	rows, err := s.db.Query("SELECT * FROM orders where status IN (?,?)", "Yet to start", "Cooking")
+	if err!=nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var order []types.Order
+
+	for rows.Next() {
+		u, err := scanRowIntoOrder(rows)
+		if err!=nil {
+			return nil, err
+		}
+		order = append(order, *u)
+	}
+
+	return order, nil
+}
+
+
 func (s *OrderDB) OrdersByStatus(status string) ([]types.Order ,error) {
 	rows, err := s.db.Query("SELECT * FROM orders WHERE status = ?", status)
 	if err!=nil {

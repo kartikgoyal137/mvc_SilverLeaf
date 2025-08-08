@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"github.com/gorilla/mux"
 	"github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
@@ -20,14 +22,13 @@ func NewPayHandler(store types.PaymentStore, userstore types.UserStore) *PayHand
 
 func (h *PayHandler) RegisterRoutes(router *mux.Router) {
 	adminHandler1 := auth.AdminAuth(h.HandleGetAllPayments, h.userStore)
-	jwtProtectedAdminHandler1 := auth.JWTauth(adminHandler1, h.userStore)
-	adminHandler2 := auth.AdminAuth(h.ChangePaymentStatus, h.userStore)
-	jwtProtectedAdminHandler2 := auth.JWTauth(adminHandler2, h.userStore)
+	jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.userStore)
 
 
-	router.HandleFunc("/admin/allpayments", jwtProtectedAdminHandler1).Methods("GET")
-	router.HandleFunc("/admin/paymentstatus", jwtProtectedAdminHandler2).Methods("POST")
+	router.HandleFunc("/admin/allpayments", jwtAdminHandler1).Methods("GET")
+	router.HandleFunc("/paymentstatus", auth.JWTauth(h.ChangePaymentStatus , h.userStore)).Methods("POST")
 	router.HandleFunc("/mypayments", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
+	router.HandleFunc("/api/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal , h.userStore)).Methods("GET")
 	router.HandleFunc("/payment", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("POST")
 	
 }
@@ -88,4 +89,25 @@ func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request)
 	}
 
 	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
+}
+
+func (h *PayHandler) HandleCalculateTotal(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	id, ok := vars["order_id"]
+	orderID, _ := strconv.Atoi(id)
+
+	if !ok {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("failed to fetch"))
+		return
+	}
+
+	total, err := h.store.CalculateTotal(orderID)
+	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	
+
+	utils.WriteJSON(w, http.StatusOK, total)
 }

@@ -19,16 +19,22 @@ func NewOrderHandler(store types.OrderStore, userStore types.UserStore) *OrderHa
 }
 
 func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
-	ChefHandler1 := auth.ChefAuth(h.HandleGetAllOrders, h.userStore)
-	jwtProtectedChefHandler1 := auth.JWTauth(ChefHandler1, h.userStore)
+	ChefHandler1 := auth.ChefAuth(h.HandleGetAllActiveOrders, h.userStore)
+	jwtChefHandler1 := auth.JWTauth(ChefHandler1, h.userStore)
+
 	ChefHandler2 := auth.ChefAuth(h.ChangeOrderStatus, h.userStore)
-	jwtProtectedChefHandler2 := auth.JWTauth(ChefHandler2, h.userStore)
+	jwtChefHandler2 := auth.JWTauth(ChefHandler2, h.userStore)
+
+	AdminHandler3 := auth.AdminAuth(h.HandleGetAllOrders, h.userStore)
+	jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.userStore)
 
 
 	router.HandleFunc("/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
+	router.HandleFunc("/myorders", auth.JWTauth(h.HandleMyOrders, h.userStore)).Methods("GET")
 	router.HandleFunc("/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/chef/allorders", jwtProtectedChefHandler1).Methods("GET")
-	router.HandleFunc("/chef/orderstatus", jwtProtectedChefHandler2).Methods("POST")
+	router.HandleFunc("/chef/activeorders", jwtChefHandler1).Methods("GET")
+	router.HandleFunc("/chef/orderstatus", jwtChefHandler2).Methods("POST")
+	router.HandleFunc("/chef/allorders", jwtAdminHandler3).Methods("GET")
 }
 
 
@@ -73,6 +79,17 @@ func (h *OrderHandler) HandleGetAllOrders(w http.ResponseWriter, r *http.Request
 	utils.WriteJSON(w, http.StatusOK, orders)
 }
 
+func (h *OrderHandler) HandleGetAllActiveOrders(w http.ResponseWriter, r *http.Request) {
+
+	orders, err := h.store.GetAllActiveOrders()
+	if err!=nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, orders)
+}
+
 func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request) {
 
 	var payload types.ChangeOrderStatusPayload
@@ -88,4 +105,17 @@ func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request)
 	}
 
 	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
+}
+
+func (h *OrderHandler) HandleMyOrders(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userID := ctx.Value(auth.UserKey).(int)
+
+	item, err := h.store.OrdersByUserId(userID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusAccepted, item)
 }

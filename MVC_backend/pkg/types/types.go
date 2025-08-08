@@ -95,6 +95,7 @@ type UserStore interface {
 	CreateNewUser(user User) error
 	GetUserById(id int) (*User, error)
 	GetAllUsers() ([]User, error)
+	ChangeUserStatus(id int, role string) error
 }
 
 type PaymentStore interface {
@@ -102,6 +103,7 @@ type PaymentStore interface {
 	GetAllPayments() ([]Payment, error)
 	CreateNewPayment(pay *MakePayment) error
 	ChangePayStatus(orderId int, status string) error
+	CalculateTotal(orderId int) (int, error)
 }
 
 type OrderStore interface {
@@ -111,6 +113,7 @@ type OrderStore interface {
 	CreateOrder(order CreateOrder) error
 	CreateEmptyOrder(userId int) (int,error)
 	ChangeStatus(orderId int, status string) error
+	GetAllActiveOrders() ([]Order, error)
 }
 
 type MenuStore interface {
