@@ -12,7 +12,7 @@ type Category struct {
 type MenuItem struct {
 	ProductID      int     `json:"product_id"`
 	ProductName    string  `json:"product_name"`
-	CategoryID     *int    `json:"category_id"`
+	CategoryID     int    `json:"category_id"`
 	Price          float64 `json:"price"`
 	ImageURL       string  `json:"image_url"`
 	IngredientList string  `json:"ingredient_list"`
@@ -20,16 +20,16 @@ type MenuItem struct {
 
 type Order struct {
 	OrderID      int       `json:"order_id"`
-	UserID       *int      `json:"user_id"`
+	UserID       int      `json:"user_id"`
 	Status       string    `json:"status"` // "Yet to start", "Cooking", "Completed"
 	CreatedAt    time.Time `json:"created_at"`
 	Instructions string    `json:"instructions"`
-	TableNo      *int      `json:"table_no"`
+	TableNo      int      `json:"table_no"`
 }
 
 type CreateOrder struct {
 	OrderID      int    `json:"order_id"`
-	TableNo      *int   `json:"table_no"`
+	TableNo      int   `json:"table_no"`
 	Tip          *int   `json:"tip"`
 	Instructions string `json:"instructions"`
 }
@@ -42,8 +42,8 @@ type CartItem struct {
 
 type Payment struct {
 	TransactionID int       `json:"transaction_id"`
-	OrderID       *int      `json:"order_id"`
-	UserID        *int      `json:"user_id"`
+	OrderID       int      `json:"order_id"`
+	UserID        int      `json:"user_id"`
 	FoodTotal     float64   `json:"food_total"`
 	CreatedAt     time.Time `json:"created_at"`
 	Tip           *int      `json:"tip"`
@@ -51,8 +51,8 @@ type Payment struct {
 }
 
 type MakePayment struct {
-	OrderID   *int    `json:"order_id"`
-	UserID    *int    `json:"user_id"`
+	OrderID   int    `json:"order_id"`
+	UserID    int    `json:"user_id"`
 	FoodTotal float64 `json:"food_total"`
 	Tip       *int    `json:"tip"`
 }
