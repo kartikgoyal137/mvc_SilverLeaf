@@ -34,7 +34,11 @@ func (s *MenuDB) ListOfCategory() ([]types.Category ,error) {
 }
 
 func (s *MenuDB) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
-	rows, err := s.db.Query("SELECT * from menu WHERE category_id =  ?;", id)
+	query := `SELECT m.product_id, m.product_name, m.category_id, m.price, m.image_url, pi.ingredients 
+			  FROM menu AS m 
+			  LEFT JOIN product_ingredients AS pi ON m.product_id = pi.product_id 
+			  WHERE m.category_id = ?;`
+	rows, err := s.db.Query(query, id)
 	if err!=nil {
 		return nil, err
 	}
@@ -43,7 +47,7 @@ func (s *MenuDB) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	var items []types.MenuItem
 
 	for rows.Next() {
-		i, err := scanRowIntoItem(rows)
+		i, err := scanRowIntoItem2(rows)
 		if err!=nil {
 			return nil, err
 		}
@@ -79,6 +83,25 @@ func scanRowIntoItem(rows *sql.Rows) (*types.MenuItem, error) {
 		&item.CategoryID,
 		&item.Price,
 		&item.ImageURL,
+	)
+
+	if err!=nil {
+		return nil,err
+	}
+
+	return item, nil
+}
+
+func scanRowIntoItem2(rows *sql.Rows) (*types.MenuItem, error) {
+	item := new(types.MenuItem)
+
+	err := rows.Scan(
+		&item.ProductID,
+		&item.ProductName,
+		&item.CategoryID,
+		&item.Price,
+		&item.ImageURL,
+		&item.IngredientList,
 	)
 
 	if err!=nil {

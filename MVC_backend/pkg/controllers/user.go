@@ -67,6 +67,18 @@ func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	} 
 
+	if payload.FirstName == "" || payload.Email == "" || payload.Password == "" || payload.LastName == "" {
+	utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("all fields are required"))
+	return
+    }
+
+	if len(payload.Password) < 8 {
+        utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("password must be at least 8 characters long"))
+        return
+    }
+
+
+
 	_, err := h.store.GetUserByEmail(payload.Email)
 	if err==nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email already exists"))

@@ -1,6 +1,7 @@
 package controller
 
 import (
+    "fmt"
 	"net/http"
     "strconv"
 	"github.com/gorilla/mux"
@@ -30,6 +31,11 @@ func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
     var item types.CartItem
     if err := utils.ParseJSON(r, &item); err != nil {
         utils.WriteError(w, http.StatusBadRequest, err)
+        return
+    }
+
+    if item.Quantity <= 0 || item.Quantity > 100 {
+        utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("quantity must be between 1 and 100"))
         return
     }
 
@@ -67,6 +73,11 @@ func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) 
     var item types.CartItem
     if err := utils.ParseJSON(r, &item); err != nil {
         utils.WriteError(w, http.StatusBadRequest, err)
+        return
+    }
+
+    if item.Quantity <= 0 || item.Quantity > 100 {
+        utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("quantity must be between 1 and 100"))
         return
     }
 

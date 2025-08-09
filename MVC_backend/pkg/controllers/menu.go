@@ -46,9 +46,9 @@ func (h *MenuHandler) AllCategories(w http.ResponseWriter, r *http.Request) {
 func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	userID, _ := strconv.Atoi(id)
+	productID, _ := strconv.Atoi(id)
 
-	cat, err := h.store.GetMenuByCategoryId(userID)
+	cat, err := h.store.GetMenuByCategoryId(productID)
 	if err!=nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
