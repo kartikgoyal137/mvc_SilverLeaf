@@ -5,6 +5,7 @@ import (
 	"net/http"
     "strconv"
 	"github.com/gorilla/mux"
+    sqldriver "github.com/go-sql-driver/mysql"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
 	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
@@ -41,9 +42,16 @@ func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 
     err := h.store.AddToCart(item)
     if err != nil {
-		err2 := h.store.UpdateCartItemQuantity(item)
-        if err2!=nil {
-			utils.WriteError(w, http.StatusBadRequest, err2)
+        if mysqlErr, ok := err.(*sqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
+            err2 := h.store.UpdateCartItemQuantity(item)
+            utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item updated successfully"})
+            if err2!=nil {
+                utils.WriteError(w, http.StatusBadRequest, err2)
+			    return
+		    }
+            return
+		} else {
+			utils.WriteError(w, http.StatusBadRequest, err)
 			return
 		}
     }
@@ -96,6 +104,7 @@ func (h *CartHandler) GetCartItemsHandler(w http.ResponseWriter, r *http.Request
     orderID, err := strconv.Atoi(vars["orderid"])
     if err!= nil {
         utils.WriteError(w, http.StatusBadRequest, err)
+        return
     }
    
     items, err := h.store.GetCartItems(int(orderID))

@@ -19,11 +19,11 @@ func NewOrderHandler(store types.OrderStore, userStore types.UserStore) *OrderHa
 }
 
 func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
-	ChefHandler1 := auth.ChefAuth(h.HandleGetAllActiveOrders, h.userStore)
-	jwtChefHandler1 := auth.JWTauth(ChefHandler1, h.userStore)
+	chefHandler1 := auth.ChefAuth(h.HandleGetAllActiveOrders, h.userStore)
+	jwtChefHandler1 := auth.JWTauth(chefHandler1, h.userStore)
 
-	ChefHandler2 := auth.ChefAuth(h.ChangeOrderStatus, h.userStore)
-	jwtChefHandler2 := auth.JWTauth(ChefHandler2, h.userStore)
+	chefHandler2 := auth.ChefAuth(h.ChangeOrderStatus, h.userStore)
+	jwtChefHandler2 := auth.JWTauth(chefHandler2, h.userStore)
 
 	AdminHandler3 := auth.AdminAuth(h.HandleGetAllOrders, h.userStore)
 	jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.userStore)

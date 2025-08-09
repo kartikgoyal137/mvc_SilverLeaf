@@ -16,17 +16,6 @@ func ChefAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerF
 			return
 	}
 
-	user, err := store.GetUserById(userID)
-	if err != nil {
-			utils.WriteError(w, http.StatusNotFound, fmt.Errorf("user not found"))
-			return
-	}
-
-	if user.Role != "chef" {
-			utils.WriteError(w, http.StatusForbidden, fmt.Errorf("user not authorized"))
-			return
-		}
-
-    handlerFunc(w, r)
+	utils.RoleAuth(handlerFunc, store, "chef" ,userID)(w,r)
    }
 }

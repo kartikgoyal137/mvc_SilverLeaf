@@ -30,7 +30,7 @@ func InitDatabase() (*sql.DB,error) {
 
 	pingErr := DB.Ping()
     if pingErr != nil {
-        return nil, err
+        return nil, pingErr
     }
     fmt.Println("Connected!")
 

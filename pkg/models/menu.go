@@ -47,7 +47,7 @@ func (s *MenuDB) GetMenuByCategoryId(id int) ([]types.MenuItem ,error) {
 	var items []types.MenuItem
 
 	for rows.Next() {
-		i, err := scanRowIntoItem2(rows)
+		i, err := scanRowIntoItem(rows)
 		if err!=nil {
 			return nil, err
 		}
@@ -62,6 +62,11 @@ func (s *MenuDB) AddMenuItem(item *types.MenuItem) error {
     if err != nil {
         return err
     }
+
+	_, err2 := s.db.Exec("INSERT INTO product_ingredients (product_id, ingredients) VALUES (?, ?)", item.ProductID, item.IngredientList)
+    if err2 != nil {
+        return err2
+    }
     return nil
 }
 
@@ -73,26 +78,7 @@ func (s *MenuDB) RemoveMenuItem(productID int) error {
     return nil
 }
 
-
 func scanRowIntoItem(rows *sql.Rows) (*types.MenuItem, error) {
-	item := new(types.MenuItem)
-
-	err := rows.Scan(
-		&item.ProductID,
-		&item.ProductName,
-		&item.CategoryID,
-		&item.Price,
-		&item.ImageURL,
-	)
-
-	if err!=nil {
-		return nil,err
-	}
-
-	return item, nil
-}
-
-func scanRowIntoItem2(rows *sql.Rows) (*types.MenuItem, error) {
 	item := new(types.MenuItem)
 
 	err := rows.Scan(

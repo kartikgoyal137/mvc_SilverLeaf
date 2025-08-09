@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+
 	"github.com/gorilla/mux"
+	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 )
 
 type MenuHandler struct {
@@ -46,7 +48,11 @@ func (h *MenuHandler) AllCategories(w http.ResponseWriter, r *http.Request) {
 func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	productID, _ := strconv.Atoi(id)
+	productID, err := strconv.Atoi(id)
+	if err!=nil {
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("failed to convert productID into integer"))
+		return
+	}
 
 	cat, err := h.store.GetMenuByCategoryId(productID)
 	if err!=nil {

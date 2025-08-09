@@ -16,17 +16,7 @@ func AdminAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.Handler
 			return
 	}
 
-	user, err := store.GetUserById(userID)
-	if err != nil {
-			utils.WriteError(w, http.StatusNotFound, fmt.Errorf("user not found"))
-			return
-	}
-
-	if user.Role != "administrator" {
-			utils.WriteError(w, http.StatusForbidden, fmt.Errorf("user not authorized"))
-			return
-		}
-
-    handlerFunc(w, r)
+	utils.RoleAuth(handlerFunc, store, "administrator" ,userID)(w,r)
+   
    }
 }
