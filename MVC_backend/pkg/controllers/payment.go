@@ -28,11 +28,11 @@ func (h *PayHandler) RegisterRoutes(router *mux.Router) {
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.userStore)
 
 
-	router.HandleFunc("/admin/allpayments", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/admin/paymentstatus", jwtAdminHandler2).Methods("POST")
-	router.HandleFunc("/mypayments", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
-	router.HandleFunc("/api/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal , h.userStore)).Methods("GET")
-	router.HandleFunc("/payment", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("POST")
+	router.HandleFunc("/payments/admin/all", jwtAdminHandler1).Methods("GET")
+	router.HandleFunc("/payments/admin/status", jwtAdminHandler2).Methods("POST")
+	router.HandleFunc("/payments/user", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
+	router.HandleFunc("/payments/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal , h.userStore)).Methods("GET")
+	router.HandleFunc("/payments/new", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("POST")
 	
 }
 
@@ -70,7 +70,7 @@ func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
 
 	err := h.store.CreateNewPayment(&payload)
 	if err!=nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -110,7 +110,7 @@ func (h *PayHandler) HandleCalculateTotal(w http.ResponseWriter, r *http.Request
 
 	total, err := h.store.CalculateTotal(orderID)
 	if err!=nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 	

@@ -25,11 +25,11 @@ func (h *UserHandler) RegisterRoutes(router *mux.Router) {
 	adminHandler2 := auth.AdminAuth(h.ChangeUserStatus, h.store)
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.store)
 
-	router.HandleFunc("/admin/allusers", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/admin/userstatus/{role}/{user}", jwtAdminHandler2).Methods("POST")
-	router.HandleFunc("/login", h.handleLogin).Methods("POST")
-	router.HandleFunc("/signup", h.handleSignup).Methods("POST")
-	router.HandleFunc("/userinfo", auth.JWTauth(h.HandleGetUser , h.store)).Methods("GET")
+	router.HandleFunc("/client/admin/all", jwtAdminHandler1).Methods("GET")
+	router.HandleFunc("/client/admin/status/{role}/{user}", jwtAdminHandler2).Methods("POST")
+	router.HandleFunc("/client/login", h.handleLogin).Methods("POST")
+	router.HandleFunc("/client/signup", h.handleSignup).Methods("POST")
+	router.HandleFunc("/client/userinfo", auth.JWTauth(h.HandleGetUser , h.store)).Methods("GET")
 }
 
 
@@ -92,7 +92,7 @@ func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, nil)
+	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Created account successfully"})
 }
 
 func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request) {
@@ -130,7 +130,7 @@ func (h *UserHandler) ChangeUserStatus(w http.ResponseWriter, r *http.Request) {
 
 	err2 := h.store.ChangeUserStatus(user, role)
 	if err2!=nil {
-		utils.WriteError(w, http.StatusBadRequest, err2)
+		utils.WriteError(w, http.StatusInternalServerError, err2)
 		return
 	}
 

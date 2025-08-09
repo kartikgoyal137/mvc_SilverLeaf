@@ -19,10 +19,10 @@ func NewCartHandler(store types.CartStore, userStore types.UserStore) *CartHandl
 }
 
 func (h *CartHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/addtocart", auth.JWTauth(h.AddToCartHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/editcart", auth.JWTauth(h.UpdateCartHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/deletecart", auth.JWTauth(h.DeleteCartItemHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/getcart/{orderid}", auth.JWTauth(h.GetCartItemsHandler, h.userStore)).Methods("GET")
+	router.HandleFunc("/cart/add", auth.JWTauth(h.AddToCartHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/cart/edit", auth.JWTauth(h.UpdateCartHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/cart/delete", auth.JWTauth(h.DeleteCartItemHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/cart/get/{orderid}", auth.JWTauth(h.GetCartItemsHandler, h.userStore)).Methods("GET")
 }
 
 func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 		}
     }
 
-    utils.WriteJSON(w, http.StatusCreated, nil)
+    utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Item added successfully"})
 }
 
 
@@ -59,7 +59,7 @@ func (h *CartHandler) DeleteCartItemHandler(w http.ResponseWriter, r *http.Reque
         return
     }
 
-    utils.WriteJSON(w, http.StatusCreated, nil)
+    utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Item deleted successfully"})
 }
 
 func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) {

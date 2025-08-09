@@ -31,9 +31,7 @@ func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFu
       }
 
       claims := token.Claims.(jwt.MapClaims)
-      userIDfloat := claims["userID"].(float64)
-
-      userID:= int(userIDfloat)
+      userID := claims["userID"].(int)
 
       u, err := store.GetUserById(userID)
       if err!=nil {

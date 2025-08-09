@@ -30,11 +30,11 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
 
 
 	router.HandleFunc("/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
-	router.HandleFunc("/myorders", auth.JWTauth(h.HandleMyOrders, h.userStore)).Methods("GET")
-	router.HandleFunc("/startorder", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/chef/activeorders", jwtChefHandler1).Methods("GET")
-	router.HandleFunc("/chef/orderstatus", jwtChefHandler2).Methods("POST")
-	router.HandleFunc("/chef/allorders", jwtAdminHandler3).Methods("GET")
+	router.HandleFunc("/orders/user", auth.JWTauth(h.HandleMyOrders, h.userStore)).Methods("GET")
+	router.HandleFunc("/orders/start", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/orders/chef/active", jwtChefHandler1).Methods("GET")
+	router.HandleFunc("/orders/chef/status", jwtChefHandler2).Methods("POST")
+	router.HandleFunc("/orders/chef/all", jwtAdminHandler3).Methods("GET")
 }
 
 
@@ -100,7 +100,7 @@ func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request)
 
 	err := h.store.ChangeStatus(payload.OrderID, payload.Status)
 	if err!=nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 

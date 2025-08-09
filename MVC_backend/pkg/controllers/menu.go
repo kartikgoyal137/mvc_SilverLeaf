@@ -25,8 +25,8 @@ func (h *MenuHandler) RegisterRoutes(router *mux.Router) {
 	adminHandler2 := auth.AdminAuth(h.HandleRemoveMenuItem, h.userStore)
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.userStore)
 	
-	router.HandleFunc("/category", auth.JWTauth(h.AllCategories, h.userStore)).Methods("GET")
-	router.HandleFunc("/menu/{id}", auth.JWTauth(h.MenuByCategory, h.userStore)).Methods("GET")
+	router.HandleFunc("/menu/cat/all", auth.JWTauth(h.AllCategories, h.userStore)).Methods("GET")
+	router.HandleFunc("/menu/cat/{id}", auth.JWTauth(h.MenuByCategory, h.userStore)).Methods("GET")
 	router.HandleFunc("/menu/add", jwtAdminHandler1).Methods("POST")
 	router.HandleFunc("/menu/remove/{product_id}", jwtAdminHandler2).Methods("DELETE")
 }
@@ -50,7 +50,7 @@ func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
 
 	cat, err := h.store.GetMenuByCategoryId(userID)
 	if err!=nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
