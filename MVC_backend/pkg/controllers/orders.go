@@ -53,6 +53,8 @@ func (h *OrderHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Order created successfully"})
+
 }
 
 func (h *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
@@ -117,5 +119,5 @@ func (h *OrderHandler) HandleMyOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusAccepted, item)
+	utils.WriteJSON(w, http.StatusOK, item)
 }

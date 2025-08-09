@@ -38,24 +38,17 @@ func (s *UserDB) GetAllUsers() ([]types.User, error) {
 }
 
 func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE email = ?", email)
-	if err!=nil {
+	row := s.db.QueryRow("SELECT * FROM users WHERE email = ?", email)
+
+	u := new(types.User)
+
+	err := row.Scan(&u.UserID, &u.FirstName, &u.LastName, &u.Contact, &u.Email, &u.PasswordHash, &u.Role,)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("user not found")
+		}
 		return nil, err
 	}
-	defer rows.Close()
-
-	var u *types.User
-
-	for rows.Next() {
-		u, err = scanRowIntoUser(rows)
-		if err!=nil {
-			return nil, err
-		}
-	}
-
-	if u == nil {
-        return nil, fmt.Errorf("user not found")
-    }
 
 	return u, nil
 }
@@ -81,23 +74,16 @@ func (s *UserDB) ChangeUserStatus(id int, role string) error {
 }
 
 func (s *UserDB) GetUserById(id int) (*types.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE user_id = ?", id)
-	if err!=nil {
-		return nil, err
-	}
-	defer rows.Close()
+	row := s.db.QueryRow("SELECT * FROM users WHERE user_id = ?", id)
 
 	u := new(types.User)
 
-	for rows.Next() {
-		u, err= scanRowIntoUser(rows)
-		if err!=nil {
-			return nil, err
+	err := row.Scan(&u.UserID, &u.FirstName, &u.LastName, &u.Contact, &u.Email, &u.PasswordHash, &u.Role,)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("user not found")
 		}
-	}
-
-	if u.UserID == 0 {
-		return nil, fmt.Errorf("user not found")
+		return nil, err
 	}
 
 	return u, nil

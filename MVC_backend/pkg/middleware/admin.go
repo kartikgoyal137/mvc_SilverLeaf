@@ -23,7 +23,7 @@ func AdminAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.Handler
 	}
 
 	if user.Role != "administrator" {
-			utils.WriteError(w, http.StatusNotFound, fmt.Errorf("user not authorized"))
+			utils.WriteError(w, http.StatusForbidden, fmt.Errorf("user not authorized"))
 			return
 		}
 

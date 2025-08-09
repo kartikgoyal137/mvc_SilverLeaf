@@ -23,7 +23,7 @@ func ChefAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerF
 	}
 
 	if user.Role != "chef" {
-			utils.WriteError(w, http.StatusNotFound, fmt.Errorf("user not authorized"))
+			utils.WriteError(w, http.StatusForbidden, fmt.Errorf("user not authorized"))
 			return
 		}
 

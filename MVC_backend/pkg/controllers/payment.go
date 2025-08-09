@@ -74,7 +74,7 @@ func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Payment created successfully"})
+	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Payment created successfully"})
 }
 
 func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request) {

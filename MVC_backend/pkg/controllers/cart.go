@@ -59,7 +59,7 @@ func (h *CartHandler) DeleteCartItemHandler(w http.ResponseWriter, r *http.Reque
         return
     }
 
-    utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Item deleted successfully"})
+    utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item deleted successfully"})
 }
 
 func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +76,7 @@ func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) 
 		return
     }
 
-    utils.WriteJSON(w, http.StatusCreated, nil)
+    utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "updated quantity successfully"})
 }
 
 func (h *CartHandler) GetCartItemsHandler(w http.ResponseWriter, r *http.Request) {
