@@ -29,7 +29,7 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
 	jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.userStore)
 
 
-	router.HandleFunc("/placeorder", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
+	router.HandleFunc("/orders/place", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
 	router.HandleFunc("/orders/user", auth.JWTauth(h.HandleMyOrders, h.userStore)).Methods("GET")
 	router.HandleFunc("/orders/start", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
 	router.HandleFunc("/orders/chef/active", jwtChefHandler1).Methods("GET")
@@ -67,7 +67,7 @@ func (h *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, orderID)
+	utils.WriteJSON(w, http.StatusCreated, map[string]int{"order_id":orderID})
 }
 
 func (h *OrderHandler) HandleGetAllOrders(w http.ResponseWriter, r *http.Request) {

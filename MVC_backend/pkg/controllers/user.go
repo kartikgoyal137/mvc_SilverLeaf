@@ -32,8 +32,6 @@ func (h *UserHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/client/userinfo", auth.JWTauth(h.HandleGetUser , h.store)).Methods("GET")
 }
 
-
-
 func (h *UserHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	var user types.LoginUser
 	if err:=utils.ParseJSON(r, &user); err!=nil {
