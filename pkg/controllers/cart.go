@@ -21,8 +21,8 @@ func NewCartHandler(store types.CartStore, userStore types.UserStore) *CartHandl
 
 func (h *CartHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/cart/add", auth.JWTauth(h.AddToCartHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/cart/edit", auth.JWTauth(h.UpdateCartHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/cart/delete", auth.JWTauth(h.DeleteCartItemHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/cart/edit", auth.JWTauth(h.UpdateCartHandler, h.userStore)).Methods("PATCH")
+	router.HandleFunc("/cart/delete", auth.JWTauth(h.DeleteCartItemHandler, h.userStore)).Methods("DELETE")
 	router.HandleFunc("/cart/get/{orderid}", auth.JWTauth(h.GetCartItemsHandler, h.userStore)).Methods("GET")
 }
 

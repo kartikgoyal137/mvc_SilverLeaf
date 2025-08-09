@@ -29,7 +29,7 @@ func (h *PayHandler) RegisterRoutes(router *mux.Router) {
 
 
 	router.HandleFunc("/payments/admin/all", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/payments/admin/status", jwtAdminHandler2).Methods("POST")
+	router.HandleFunc("/payments/admin/status", jwtAdminHandler2).Methods("PATCH")
 	router.HandleFunc("/payments/user", auth.JWTauth(h.HandleGetPayByUser , h.userStore)).Methods("GET")
 	router.HandleFunc("/payments/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal , h.userStore)).Methods("GET")
 	router.HandleFunc("/payments/new", auth.JWTauth(h.HandleNewPayment , h.userStore)).Methods("POST")

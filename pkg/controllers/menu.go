@@ -27,7 +27,7 @@ func (h *MenuHandler) RegisterRoutes(router *mux.Router) {
 	
 	router.HandleFunc("/menu/cat/all", auth.JWTauth(h.AllCategories, h.userStore)).Methods("GET")
 	router.HandleFunc("/menu/cat/{id}", auth.JWTauth(h.MenuByCategory, h.userStore)).Methods("GET")
-	router.HandleFunc("/menu/add", jwtAdminHandler1).Methods("POST")
+	router.HandleFunc("/menu/add", jwtAdminHandler1).Methods("PATCH")
 	router.HandleFunc("/menu/remove/{product_id}", jwtAdminHandler2).Methods("DELETE")
 }
 

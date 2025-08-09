@@ -26,7 +26,7 @@ func (h *UserHandler) RegisterRoutes(router *mux.Router) {
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.store)
 
 	router.HandleFunc("/client/admin/all", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/client/admin/status/{role}/{user}", jwtAdminHandler2).Methods("POST")
+	router.HandleFunc("/client/admin/status/{role}/{user}", jwtAdminHandler2).Methods("PATCH")
 	router.HandleFunc("/client/login", h.handleLogin).Methods("POST")
 	router.HandleFunc("/client/signup", h.handleSignup).Methods("POST")
 	router.HandleFunc("/client/userinfo", auth.JWTauth(h.HandleGetUser , h.store)).Methods("GET")
