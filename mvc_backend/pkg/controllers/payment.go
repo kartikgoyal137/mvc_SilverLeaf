@@ -2,12 +2,13 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/gorilla/mux"
 	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-	"net/http"
-	"strconv"
 )
 
 type PayHandler struct {
@@ -42,7 +43,7 @@ func (h *PayHandler) HandleGetAllPayments(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, payments)
+	utils.UnMarshal(w, http.StatusOK, payments)
 }
 
 func (h *PayHandler) HandleGetPayByUser(w http.ResponseWriter, r *http.Request) {
@@ -55,13 +56,13 @@ func (h *PayHandler) HandleGetPayByUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, payments)
+	utils.UnMarshal(w, http.StatusOK, payments)
 }
 
 func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
 
 	var payload types.MakePayment
-	if err := utils.ParseJSON(r, &payload); err != nil {
+	if err := utils.Marshal(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -72,13 +73,13 @@ func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Payment created successfully"})
+	utils.UnMarshal(w, http.StatusCreated, map[string]string{"message": "Payment created successfully"})
 }
 
 func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request) {
 
 	var payload types.ChangePaymentStatusPayload
-	if err := utils.ParseJSON(r, &payload); err != nil {
+	if err := utils.Marshal(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -89,7 +90,7 @@ func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
 }
 
 func (h *PayHandler) HandleCalculateTotal(w http.ResponseWriter, r *http.Request) {
@@ -112,5 +113,5 @@ func (h *PayHandler) HandleCalculateTotal(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, total)
+	utils.UnMarshal(w, http.StatusOK, total)
 }

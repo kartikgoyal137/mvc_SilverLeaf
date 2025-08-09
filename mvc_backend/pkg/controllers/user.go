@@ -2,12 +2,13 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/gorilla/mux"
 	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-	"net/http"
-	"strconv"
 )
 
 type UserHandler struct {
@@ -34,7 +35,7 @@ func (h *UserHandler) RegisterRoutes(router *mux.Router) {
 
 func (h *UserHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	var user types.LoginUser
-	if err := utils.ParseJSON(r, &user); err != nil {
+	if err := utils.Marshal(r, &user); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -55,12 +56,12 @@ func (h *UserHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token})
 }
 
 func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
 	var payload types.RegisterUser
-	if err := utils.ParseJSON(r, &payload); err != nil {
+	if err := utils.Marshal(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -100,7 +101,7 @@ func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Created account successfully"})
+	utils.UnMarshal(w, http.StatusCreated, map[string]string{"message": "Created account successfully"})
 }
 
 func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request) {
@@ -113,7 +114,7 @@ func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, user)
+	utils.UnMarshal(w, http.StatusOK, user)
 }
 
 func (h *UserHandler) HandleGetAllUsers(w http.ResponseWriter, r *http.Request) {
@@ -123,7 +124,7 @@ func (h *UserHandler) HandleGetAllUsers(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, user)
+	utils.UnMarshal(w, http.StatusOK, user)
 }
 
 func (h *UserHandler) ChangeUserStatus(w http.ResponseWriter, r *http.Request) {
@@ -142,5 +143,5 @@ func (h *UserHandler) ChangeUserStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
 }

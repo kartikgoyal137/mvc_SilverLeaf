@@ -39,7 +39,7 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
 func (h *OrderHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 
 	var order types.CreateOrder
-	if err := utils.ParseJSON(r, &order); err != nil {
+	if err := utils.Marshal(r, &order); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -50,7 +50,7 @@ func (h *OrderHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Order created successfully"})
+	utils.UnMarshal(w, http.StatusCreated, map[string]string{"message": "Order created successfully"})
 
 }
 
@@ -64,7 +64,7 @@ func (h *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]int{"order_id": orderID})
+	utils.UnMarshal(w, http.StatusCreated, map[string]int{"order_id": orderID})
 }
 
 func (h *OrderHandler) HandleGetAllOrders(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +75,7 @@ func (h *OrderHandler) HandleGetAllOrders(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, orders)
+	utils.UnMarshal(w, http.StatusOK, orders)
 }
 
 func (h *OrderHandler) HandleGetAllActiveOrders(w http.ResponseWriter, r *http.Request) {
@@ -86,13 +86,13 @@ func (h *OrderHandler) HandleGetAllActiveOrders(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, orders)
+	utils.UnMarshal(w, http.StatusOK, orders)
 }
 
 func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request) {
 
 	var payload types.ChangeOrderStatusPayload
-	if err := utils.ParseJSON(r, &payload); err != nil {
+	if err := utils.Marshal(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -103,7 +103,7 @@ func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
 }
 
 func (h *OrderHandler) HandleMyOrders(w http.ResponseWriter, r *http.Request) {
@@ -116,5 +116,5 @@ func (h *OrderHandler) HandleMyOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, item)
+	utils.UnMarshal(w, http.StatusOK, item)
 }

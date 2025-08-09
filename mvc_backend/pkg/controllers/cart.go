@@ -2,13 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+
 	sqldriver "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-	"net/http"
-	"strconv"
 )
 
 type CartHandler struct {
@@ -30,7 +31,7 @@ func (h *CartHandler) RegisterRoutes(router *mux.Router) {
 func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 
 	var item types.CartItem
-	if err := utils.ParseJSON(r, &item); err != nil {
+	if err := utils.Marshal(r, &item); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -44,7 +45,7 @@ func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if mysqlErr, ok := err.(*sqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
 			err2 := h.store.UpdateCartItemQuantity(item)
-			utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item updated successfully"})
+			utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "Item updated successfully"})
 			if err2 != nil {
 				utils.WriteError(w, http.StatusBadRequest, err2)
 				return
@@ -56,13 +57,13 @@ func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Item added successfully"})
+	utils.UnMarshal(w, http.StatusCreated, map[string]string{"message": "Item added successfully"})
 }
 
 func (h *CartHandler) DeleteCartItemHandler(w http.ResponseWriter, r *http.Request) {
 
 	var item types.CartItem
-	if err := utils.ParseJSON(r, &item); err != nil {
+	if err := utils.Marshal(r, &item); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -72,13 +73,13 @@ func (h *CartHandler) DeleteCartItemHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item deleted successfully"})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "Item deleted successfully"})
 }
 
 func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) {
 
 	var item types.CartItem
-	if err := utils.ParseJSON(r, &item); err != nil {
+	if err := utils.Marshal(r, &item); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -94,7 +95,7 @@ func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "updated quantity successfully"})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "updated quantity successfully"})
 }
 
 func (h *CartHandler) GetCartItemsHandler(w http.ResponseWriter, r *http.Request) {
@@ -112,5 +113,5 @@ func (h *CartHandler) GetCartItemsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusAccepted, items)
+	utils.UnMarshal(w, http.StatusAccepted, items)
 }

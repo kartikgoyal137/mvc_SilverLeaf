@@ -41,7 +41,7 @@ func (h *MenuHandler) AllCategories(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, cat)
+	utils.UnMarshal(w, http.StatusOK, cat)
 }
 
 func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
@@ -59,12 +59,12 @@ func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, cat)
+	utils.UnMarshal(w, http.StatusOK, cat)
 }
 
 func (h *MenuHandler) HandleAddMenuItem(w http.ResponseWriter, r *http.Request) {
 	var item types.MenuItem
-	if err := utils.ParseJSON(r, &item); err != nil {
+	if err := utils.Marshal(r, &item); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -75,7 +75,7 @@ func (h *MenuHandler) HandleAddMenuItem(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Menu item added successfully"})
+	utils.UnMarshal(w, http.StatusCreated, map[string]string{"message": "Menu item added successfully"})
 }
 
 func (h *MenuHandler) HandleRemoveMenuItem(w http.ResponseWriter, r *http.Request) {
@@ -93,5 +93,5 @@ func (h *MenuHandler) HandleRemoveMenuItem(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Menu item removed successfully"})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "Menu item removed successfully"})
 }
