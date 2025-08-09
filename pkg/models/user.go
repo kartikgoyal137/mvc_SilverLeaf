@@ -19,7 +19,7 @@ func NewUserDB(db *sql.DB) *UserDB {
 func (s *UserDB) GetAllUsers() ([]types.User, error) {
 	query := fmt.Sprintf("SELECT %s FROM users", userColumns)
 	rows, err := s.db.Query(query)
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -28,7 +28,7 @@ func (s *UserDB) GetAllUsers() ([]types.User, error) {
 
 	for rows.Next() {
 		u, err := scanRowIntoUser(rows)
-		if err!=nil {
+		if err != nil {
 			return nil, err
 		}
 		people = append(people, *u)
@@ -42,7 +42,7 @@ func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
 
 	u := new(types.User)
 
-	err := row.Scan(&u.UserID, &u.FirstName, &u.LastName, &u.Contact, &u.Email, &u.PasswordHash, &u.Role,)
+	err := row.Scan(&u.UserID, &u.FirstName, &u.LastName, &u.Contact, &u.Email, &u.PasswordHash, &u.Role)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("user not found")
@@ -54,7 +54,7 @@ func (s *UserDB) GetUserByEmail(email string) (*types.User, error) {
 }
 
 func (s *UserDB) CreateNewUser(user types.User) error {
-	_, err := s.db.Exec("INSERT INTO users (first_name, last_name, contact, email, password_hash) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Contact ,user.Email, user.PasswordHash)
+	_, err := s.db.Exec("INSERT INTO users (first_name, last_name, contact, email, password_hash) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Contact, user.Email, user.PasswordHash)
 
 	if err != nil {
 		return err
@@ -64,7 +64,7 @@ func (s *UserDB) CreateNewUser(user types.User) error {
 }
 
 func (s *UserDB) ChangeUserStatus(id int, role string) error {
-	_, err := s.db.Exec("UPDATE users SET role = ? WHERE user_id = ?", role,id)
+	_, err := s.db.Exec("UPDATE users SET role = ? WHERE user_id = ?", role, id)
 
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 
 	u := new(types.User)
 
-	err := row.Scan(&u.UserID, &u.FirstName, &u.LastName, &u.Contact, &u.Email, &u.PasswordHash, &u.Role,)
+	err := row.Scan(&u.UserID, &u.FirstName, &u.LastName, &u.Contact, &u.Email, &u.PasswordHash, &u.Role)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("user not found")
@@ -88,7 +88,6 @@ func (s *UserDB) GetUserById(id int) (*types.User, error) {
 
 	return u, nil
 }
-
 
 func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	user := new(types.User)
@@ -103,10 +102,9 @@ func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 		&user.Role,
 	)
 
-	if err!=nil {
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 
 	return user, nil
 }
-

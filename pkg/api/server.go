@@ -1,24 +1,24 @@
 package api
 
 import (
-	"log"
 	"database/sql"
-	"net/http"
+	"github.com/gorilla/mux"
 	"github.com/kartikgoyal137/MVC/pkg/controllers"
 	"github.com/kartikgoyal137/MVC/pkg/models"
-	"github.com/gorilla/mux"
+	"log"
+	"net/http"
 )
 
 type APIServer struct {
-	addr string
-	db *sql.DB
+	addr   string
+	db     *sql.DB
 	Server *http.Server
-} 
+}
 
 func NewAPIServer(addr string, db *sql.DB) *APIServer {
 	return &APIServer{
-		addr : addr,
-		db : db,
+		addr: addr,
+		db:   db,
 	}
 }
 
@@ -39,7 +39,6 @@ func (s *APIServer) Run() error {
 	cartHandler := controller.NewCartHandler(models.NewCartDB(s.db), userStore)
 	cartHandler.RegisterRoutes(subrouter)
 
-	
 	log.Printf("Starting server on %s\n", s.addr)
 	s.Server = &http.Server{
 		Addr:    s.addr,
@@ -47,7 +46,6 @@ func (s *APIServer) Run() error {
 	}
 
 	err := s.Server.ListenAndServe()
-	
+
 	return err
 }
-

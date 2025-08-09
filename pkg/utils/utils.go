@@ -7,7 +7,7 @@ import (
 )
 
 func ParseJSON(r *http.Request, payload any) error {
-	if r.Body==nil {
+	if r.Body == nil {
 		return fmt.Errorf("missing request body")
 	}
 
@@ -21,13 +21,13 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 }
 
 func WriteError(w http.ResponseWriter, status int, err error) error {
-	return WriteJSON(w, status, map[string]string{"error" : err.Error()})
+	return WriteJSON(w, status, map[string]string{"error": err.Error()})
 }
 
 func GetTokenFromRequest(r *http.Request) string {
 	tokenAuth := r.Header.Get("Authorization")
 	tokenQuery := r.URL.Query().Get("token")
-	
+
 	if tokenAuth != "" {
 		return tokenAuth
 	}

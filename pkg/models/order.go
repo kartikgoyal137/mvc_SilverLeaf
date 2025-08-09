@@ -10,12 +10,12 @@ type OrderDB struct {
 }
 
 func NewOrderDB(db *sql.DB) *OrderDB {
-	return &OrderDB{db : db}
+	return &OrderDB{db: db}
 }
 
 func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
 	rows, err := s.db.Query("SELECT * FROM orders")
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -24,7 +24,7 @@ func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
 
 	for rows.Next() {
 		u, err := scanRowIntoOrder(rows)
-		if err!=nil {
+		if err != nil {
 			return nil, err
 		}
 		order = append(order, *u)
@@ -35,7 +35,7 @@ func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
 
 func (s *OrderDB) GetAllActiveOrders() ([]types.Order, error) {
 	rows, err := s.db.Query("SELECT * FROM orders where status IN (?,?)", "Yet to start", "Cooking")
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -44,7 +44,7 @@ func (s *OrderDB) GetAllActiveOrders() ([]types.Order, error) {
 
 	for rows.Next() {
 		u, err := scanRowIntoOrder(rows)
-		if err!=nil {
+		if err != nil {
 			return nil, err
 		}
 		order = append(order, *u)
@@ -53,10 +53,9 @@ func (s *OrderDB) GetAllActiveOrders() ([]types.Order, error) {
 	return order, nil
 }
 
-
-func (s *OrderDB) OrdersByStatus(status string) ([]types.Order ,error) {
+func (s *OrderDB) OrdersByStatus(status string) ([]types.Order, error) {
 	rows, err := s.db.Query("SELECT * FROM orders WHERE status = ?", status)
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -65,22 +64,19 @@ func (s *OrderDB) OrdersByStatus(status string) ([]types.Order ,error) {
 
 	for rows.Next() {
 		o, err := scanRowIntoOrder(rows)
-		if err!=nil {
+		if err != nil {
 			return nil, err
 		}
 		ord = append(ord, *o)
 	}
-
-	
 
 	return ord, nil
 }
 
-
 func (s *OrderDB) OrdersByUserId(id int) ([]types.Order, error) {
 
 	rows, err := s.db.Query("SELECT * FROM orders WHERE user_id = ?", id)
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -89,49 +85,46 @@ func (s *OrderDB) OrdersByUserId(id int) ([]types.Order, error) {
 
 	for rows.Next() {
 		o, err := scanRowIntoOrder(rows)
-		if err!=nil {
+		if err != nil {
 			return nil, err
 		}
 		ord = append(ord, *o)
 	}
-
-	
 
 	return ord, nil
 }
 
 func (s *OrderDB) CreateOrder(order types.CreateOrder) error {
-	_ , err := s.db.Exec("UPDATE orders SET instructions = ?, table_no = ? WHERE order_id = ?;",order.Instructions, order.TableNo, order.OrderID)
-	if err!=nil {
+	_, err := s.db.Exec("UPDATE orders SET instructions = ?, table_no = ? WHERE order_id = ?;", order.Instructions, order.TableNo, order.OrderID)
+	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
-func (s *OrderDB) CreateEmptyOrder(userId int) (int,error) {
-	result , err := s.db.Exec("INSERT INTO orders (user_id, status, instructions, table_no) VALUES (?, 'Yet to start', NULL, NULL);", userId)
-	if err!=nil {
-		return 0,err
+func (s *OrderDB) CreateEmptyOrder(userId int) (int, error) {
+	result, err := s.db.Exec("INSERT INTO orders (user_id, status, instructions, table_no) VALUES (?, 'Yet to start', NULL, NULL);", userId)
+	if err != nil {
+		return 0, err
 	}
 
 	id, err := result.LastInsertId()
-    if err != nil {
-        return 0, err
-    }
+	if err != nil {
+		return 0, err
+	}
 
-    return int(id), nil
+	return int(id), nil
 }
 
 func (s *OrderDB) ChangeStatus(orderId int, status string) error {
-	_ , err := s.db.Exec("UPDATE orders SET status = ? WHERE order_id = ?;", status, orderId)
-	if err!=nil {
+	_, err := s.db.Exec("UPDATE orders SET status = ? WHERE order_id = ?;", status, orderId)
+	if err != nil {
 		return err
 	}
 
-    return nil
+	return nil
 }
-
 
 func scanRowIntoOrder(rows *sql.Rows) (*types.Order, error) {
 	order := new(types.Order)
@@ -145,8 +138,8 @@ func scanRowIntoOrder(rows *sql.Rows) (*types.Order, error) {
 		&order.TableNo,
 	)
 
-	if err!=nil {
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 
 	return order, nil

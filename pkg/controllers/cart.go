@@ -1,18 +1,18 @@
 package controller
 
 import (
-    "fmt"
-	"net/http"
-    "strconv"
+	"fmt"
+	sqldriver "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-    sqldriver "github.com/go-sql-driver/mysql"
+	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
+	"net/http"
+	"strconv"
 )
 
 type CartHandler struct {
-	store types.CartStore
+	store     types.CartStore
 	userStore types.UserStore
 }
 
@@ -29,90 +29,88 @@ func (h *CartHandler) RegisterRoutes(router *mux.Router) {
 
 func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 
-    var item types.CartItem
-    if err := utils.ParseJSON(r, &item); err != nil {
-        utils.WriteError(w, http.StatusBadRequest, err)
-        return
-    }
+	var item types.CartItem
+	if err := utils.ParseJSON(r, &item); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
 
-    if item.Quantity <= 0 || item.Quantity > 100 {
-        utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("quantity must be between 1 and 100"))
-        return
-    }
+	if item.Quantity <= 0 || item.Quantity > 100 {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("quantity must be between 1 and 100"))
+		return
+	}
 
-    err := h.store.AddToCart(item)
-    if err != nil {
-        if mysqlErr, ok := err.(*sqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
-            err2 := h.store.UpdateCartItemQuantity(item)
-            utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item updated successfully"})
-            if err2!=nil {
-                utils.WriteError(w, http.StatusBadRequest, err2)
-			    return
-		    }
-            return
+	err := h.store.AddToCart(item)
+	if err != nil {
+		if mysqlErr, ok := err.(*sqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
+			err2 := h.store.UpdateCartItemQuantity(item)
+			utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item updated successfully"})
+			if err2 != nil {
+				utils.WriteError(w, http.StatusBadRequest, err2)
+				return
+			}
+			return
 		} else {
 			utils.WriteError(w, http.StatusBadRequest, err)
 			return
 		}
-    }
+	}
 
-    utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Item added successfully"})
+	utils.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Item added successfully"})
 }
-
 
 func (h *CartHandler) DeleteCartItemHandler(w http.ResponseWriter, r *http.Request) {
 
-    var item types.CartItem
-    if err := utils.ParseJSON(r, &item); err != nil {
-        utils.WriteError(w, http.StatusBadRequest, err)
-        return
-    }
-    err := h.store.DeleteCartItem(item)
-    if err != nil {
-        utils.WriteError(w, http.StatusBadRequest, err)
-        return
-    }
+	var item types.CartItem
+	if err := utils.ParseJSON(r, &item); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	err := h.store.DeleteCartItem(item)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
 
-    utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item deleted successfully"})
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Item deleted successfully"})
 }
 
 func (h *CartHandler) UpdateCartHandler(w http.ResponseWriter, r *http.Request) {
 
-    var item types.CartItem
-    if err := utils.ParseJSON(r, &item); err != nil {
-        utils.WriteError(w, http.StatusBadRequest, err)
-        return
-    }
-
-    if item.Quantity <= 0 || item.Quantity > 100 {
-        utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("quantity must be between 1 and 100"))
-        return
-    }
-
-    err := h.store.UpdateCartItemQuantity(item)
-    if err != nil { 
+	var item types.CartItem
+	if err := utils.ParseJSON(r, &item); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
-    }
+	}
 
-    utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "updated quantity successfully"})
+	if item.Quantity <= 0 || item.Quantity > 100 {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("quantity must be between 1 and 100"))
+		return
+	}
+
+	err := h.store.UpdateCartItemQuantity(item)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "updated quantity successfully"})
 }
 
 func (h *CartHandler) GetCartItemsHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
-    orderID, err := strconv.Atoi(vars["orderid"])
-    if err!= nil {
-        utils.WriteError(w, http.StatusBadRequest, err)
-        return
-    }
-   
-    items, err := h.store.GetCartItems(int(orderID))
-    if err != nil {
-        utils.WriteError(w, http.StatusInternalServerError, err)
-        return
-    }
+	orderID, err := strconv.Atoi(vars["orderid"])
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	items, err := h.store.GetCartItems(int(orderID))
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	utils.WriteJSON(w, http.StatusAccepted, items)
 }
-

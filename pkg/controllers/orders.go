@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
-	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 )
 
 type OrderHandler struct {
-	store types.OrderStore
+	store     types.OrderStore
 	userStore types.UserStore
 }
 
@@ -28,7 +28,6 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
 	AdminHandler3 := auth.AdminAuth(h.HandleGetAllOrders, h.userStore)
 	jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.userStore)
 
-
 	router.HandleFunc("/orders/place", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
 	router.HandleFunc("/orders/user", auth.JWTauth(h.HandleMyOrders, h.userStore)).Methods("GET")
 	router.HandleFunc("/orders/start", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
@@ -37,18 +36,16 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/orders/chef/all", jwtAdminHandler3).Methods("GET")
 }
 
-
-
 func (h *OrderHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 
 	var order types.CreateOrder
-	if err:=utils.ParseJSON(r, &order); err!=nil {
+	if err := utils.ParseJSON(r, &order); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	err := h.store.CreateOrder(order)
-	if err!=nil {
+	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -62,18 +59,18 @@ func (h *OrderHandler) CreateOrderHandler(w http.ResponseWriter, r *http.Request
 	userID := ctx.Value(auth.UserKey).(int)
 	orderID, err := h.store.CreateEmptyOrder(userID)
 
-	if err!=nil {
+	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]int{"order_id":orderID})
+	utils.WriteJSON(w, http.StatusCreated, map[string]int{"order_id": orderID})
 }
 
 func (h *OrderHandler) HandleGetAllOrders(w http.ResponseWriter, r *http.Request) {
 
 	orders, err := h.store.GetAllOrders()
-	if err!=nil {
+	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -84,7 +81,7 @@ func (h *OrderHandler) HandleGetAllOrders(w http.ResponseWriter, r *http.Request
 func (h *OrderHandler) HandleGetAllActiveOrders(w http.ResponseWriter, r *http.Request) {
 
 	orders, err := h.store.GetAllActiveOrders()
-	if err!=nil {
+	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -95,13 +92,13 @@ func (h *OrderHandler) HandleGetAllActiveOrders(w http.ResponseWriter, r *http.R
 func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request) {
 
 	var payload types.ChangeOrderStatusPayload
-	if err:=utils.ParseJSON(r, &payload); err!=nil {
+	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	err := h.store.ChangeStatus(payload.OrderID, payload.Status)
-	if err!=nil {
+	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}

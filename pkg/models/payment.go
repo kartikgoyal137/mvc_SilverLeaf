@@ -14,10 +14,9 @@ func NewPaymentDB(db *sql.DB) *PaymentDB {
 	return &PaymentDB{db: db}
 }
 
-
 func (s *PaymentDB) PaymentsByUserId(id int) ([]types.Payment, error) {
 	rows, err := s.db.Query("SELECT * FROM payments WHERE user_id = ?", id)
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -26,7 +25,7 @@ func (s *PaymentDB) PaymentsByUserId(id int) ([]types.Payment, error) {
 
 	for rows.Next() {
 		p, err := scanRowIntoPayment(rows)
-		if err!=nil {
+		if err != nil {
 			return nil, err
 		}
 		pay = append(pay, *p)
@@ -38,7 +37,7 @@ func (s *PaymentDB) PaymentsByUserId(id int) ([]types.Payment, error) {
 
 func (s *PaymentDB) GetAllPayments() ([]types.Payment, error) {
 	rows, err := s.db.Query("SELECT * FROM payments;")
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -47,7 +46,7 @@ func (s *PaymentDB) GetAllPayments() ([]types.Payment, error) {
 
 	for rows.Next() {
 		p, err := scanRowIntoPayment(rows)
-		if err!=nil {
+		if err != nil {
 			return nil, err
 		}
 		pay = append(pay, *p)
@@ -58,9 +57,9 @@ func (s *PaymentDB) GetAllPayments() ([]types.Payment, error) {
 }
 
 func (s *PaymentDB) CreateNewPayment(pay *types.MakePayment) error {
-	_ , err := s.db.Exec("INSERT INTO payments (order_id, user_id, food_total, created_at, tip) VALUES (?, ?, ?, ?, ?);", pay.OrderID, pay.UserID, pay.FoodTotal, time.Now(), pay.Tip)
+	_, err := s.db.Exec("INSERT INTO payments (order_id, user_id, food_total, created_at, tip) VALUES (?, ?, ?, ?, ?);", pay.OrderID, pay.UserID, pay.FoodTotal, time.Now(), pay.Tip)
 
-	if err!=nil {
+	if err != nil {
 		return err
 	}
 
@@ -68,25 +67,24 @@ func (s *PaymentDB) CreateNewPayment(pay *types.MakePayment) error {
 }
 
 func (s *PaymentDB) ChangePayStatus(orderId int, status string) error {
-	_ , err := s.db.Exec("UPDATE payments SET status = ? WHERE order_id = ?;", status, orderId)
-	if err!=nil {
+	_, err := s.db.Exec("UPDATE payments SET status = ? WHERE order_id = ?;", status, orderId)
+	if err != nil {
 		return err
 	}
 
-    return nil
+	return nil
 }
 
 func (s *PaymentDB) CalculateTotal(orderId int) (float64, error) {
-    var total float64
-    row := s.db.QueryRow("SELECT SUM(s.quantity * m.price) FROM serve AS s JOIN menu AS m ON s.product_id = m.product_id WHERE s.order_id = ?;", orderId)
-    err := row.Scan(&total)
-    if err != nil {
-        return 0, err
-    }
-	
-    return total, nil
-}
+	var total float64
+	row := s.db.QueryRow("SELECT SUM(s.quantity * m.price) FROM serve AS s JOIN menu AS m ON s.product_id = m.product_id WHERE s.order_id = ?;", orderId)
+	err := row.Scan(&total)
+	if err != nil {
+		return 0, err
+	}
 
+	return total, nil
+}
 
 func scanRowIntoPayment(rows *sql.Rows) (*types.Payment, error) {
 	pay := new(types.Payment)
@@ -101,8 +99,8 @@ func scanRowIntoPayment(rows *sql.Rows) (*types.Payment, error) {
 		&pay.Status,
 	)
 
-	if err!=nil {
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 
 	return pay, nil

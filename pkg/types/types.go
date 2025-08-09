@@ -28,10 +28,10 @@ type Order struct {
 }
 
 type CreateOrder struct {
-	OrderID      int       `json:"order_id"`
-	TableNo      *int       `json:"table_no"`
-	Tip          *int       `json:"tip"`
-	Instructions string     `json:"instructions"`
+	OrderID      int    `json:"order_id"`
+	TableNo      *int   `json:"table_no"`
+	Tip          *int   `json:"tip"`
+	Instructions string `json:"instructions"`
 }
 
 type CartItem struct {
@@ -51,10 +51,10 @@ type Payment struct {
 }
 
 type MakePayment struct {
-	OrderID       *int      `json:"order_id"`
-	UserID        *int      `json:"user_id"`
-	FoodTotal     float64   `json:"food_total"`
-	Tip           *int      `json:"tip"`
+	OrderID   *int    `json:"order_id"`
+	UserID    *int    `json:"user_id"`
+	FoodTotal float64 `json:"food_total"`
+	Tip       *int    `json:"tip"`
 }
 
 type User struct {
@@ -68,11 +68,11 @@ type User struct {
 }
 
 type RegisterUser struct {
-	FirstName    string `json:"first_name"`
-	LastName     string `json:"last_name"`
-	Contact      string `json:"contact"`
-	Email        string `json:"email"`
-	Password string     `json:"password"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Contact   string `json:"contact"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 type LoginUser struct {
@@ -87,7 +87,7 @@ type ChangeOrderStatusPayload struct {
 
 type ChangePaymentStatusPayload struct {
 	OrderId int    `json:"order_id"`
-	Status  string       `json:"status"`
+	Status  string `json:"status"`
 }
 
 type UserStore interface {
@@ -111,22 +111,21 @@ type OrderStore interface {
 	OrdersByStatus(status string) ([]Order, error)
 	OrdersByUserId(id int) ([]Order, error)
 	CreateOrder(order CreateOrder) error
-	CreateEmptyOrder(userId int) (int,error)
+	CreateEmptyOrder(userId int) (int, error)
 	ChangeStatus(orderId int, status string) error
 	GetAllActiveOrders() ([]Order, error)
 }
 
 type MenuStore interface {
-	ListOfCategory() ([]Category ,error)
-	GetMenuByCategoryId(id int) ([]MenuItem ,error)
+	ListOfCategory() ([]Category, error)
+	GetMenuByCategoryId(id int) ([]MenuItem, error)
 	AddMenuItem(item *MenuItem) error
 	RemoveMenuItem(productID int) error
 }
 
 type CartStore interface {
-    AddToCart(place CartItem) error
-    GetCartItems(orderID int) ([]CartItem, error)
-    UpdateCartItemQuantity(place CartItem) error
-    DeleteCartItem(place CartItem) error
+	AddToCart(place CartItem) error
+	GetCartItems(orderID int) ([]CartItem, error)
+	UpdateCartItemQuantity(place CartItem) error
+	DeleteCartItem(place CartItem) error
 }
-
