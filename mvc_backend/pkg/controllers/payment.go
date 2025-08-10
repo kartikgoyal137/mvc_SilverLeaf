@@ -11,31 +11,16 @@ import (
 	"github.com/kartikgoyal137/MVC/pkg/utils"
 )
 
-type PayHandler struct {
+type PaymentHandler struct {
 	store     types.PaymentStore
-	userStore types.UserStore
+	UserStore types.UserStore
 }
 
-func NewPayHandler(store types.PaymentStore, userstore types.UserStore) *PayHandler {
-	return &PayHandler{store: store, userStore: userstore}
+func NewPaymentHandler(store types.PaymentStore, userstore types.UserStore) *PaymentHandler {
+	return &PaymentHandler{store: store, UserStore: userstore}
 }
 
-func (h *PayHandler) RegisterRoutes(router *mux.Router) {
-	adminHandler1 := auth.AdminAuth(h.HandleGetAllPayments, h.userStore)
-	jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.userStore)
-
-	adminHandler2 := auth.AdminAuth(h.ChangePaymentStatus, h.userStore)
-	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.userStore)
-
-	router.HandleFunc("/payments/admin/all", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/payments/admin/status", jwtAdminHandler2).Methods("PATCH")
-	router.HandleFunc("/payments/user", auth.JWTauth(h.HandleGetPayByUser, h.userStore)).Methods("GET")
-	router.HandleFunc("/payments/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal, h.userStore)).Methods("GET")
-	router.HandleFunc("/payments/new", auth.JWTauth(h.HandleNewPayment, h.userStore)).Methods("POST")
-
-}
-
-func (h *PayHandler) HandleGetAllPayments(w http.ResponseWriter, r *http.Request) {
+func (h *PaymentHandler) HandleGetAllPayments(w http.ResponseWriter, r *http.Request) {
 
 	payments, err := h.store.GetAllPayments()
 	if err != nil {
@@ -46,7 +31,7 @@ func (h *PayHandler) HandleGetAllPayments(w http.ResponseWriter, r *http.Request
 	utils.UnMarshal(w, http.StatusOK, payments)
 }
 
-func (h *PayHandler) HandleGetPayByUser(w http.ResponseWriter, r *http.Request) {
+func (h *PaymentHandler) HandleGetPayByUser(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 	userID := ctx.Value(auth.UserKey).(int)
@@ -59,7 +44,7 @@ func (h *PayHandler) HandleGetPayByUser(w http.ResponseWriter, r *http.Request) 
 	utils.UnMarshal(w, http.StatusOK, payments)
 }
 
-func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
+func (h *PaymentHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
 
 	var payload types.MakePayment
 	if err := utils.Marshal(r, &payload); err != nil {
@@ -76,7 +61,7 @@ func (h *PayHandler) HandleNewPayment(w http.ResponseWriter, r *http.Request) {
 	utils.UnMarshal(w, http.StatusCreated, map[string]string{"message": "Payment created successfully"})
 }
 
-func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request) {
+func (h *PaymentHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request) {
 
 	var payload types.ChangePaymentStatusPayload
 	if err := utils.Marshal(r, &payload); err != nil {
@@ -93,7 +78,7 @@ func (h *PayHandler) ChangePaymentStatus(w http.ResponseWriter, r *http.Request)
 	utils.UnMarshal(w, http.StatusOK, map[string]string{"message": "Status updated successfully"})
 }
 
-func (h *PayHandler) HandleCalculateTotal(w http.ResponseWriter, r *http.Request) {
+func (h *PaymentHandler) HandleCalculateTotal(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	id, ok := vars["order_id"]

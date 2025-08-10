@@ -2,8 +2,6 @@ package controller
 
 import (
 	"net/http"
-
-	"github.com/gorilla/mux"
 	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
@@ -11,30 +9,13 @@ import (
 
 type OrderHandler struct {
 	store     types.OrderStore
-	userStore types.UserStore
+	UserStore types.UserStore
 }
 
 func NewOrderHandler(store types.OrderStore, userStore types.UserStore) *OrderHandler {
-	return &OrderHandler{store: store, userStore: userStore}
+	return &OrderHandler{store: store, UserStore: userStore}
 }
 
-func (h *OrderHandler) RegisterRoutes(router *mux.Router) {
-	chefHandler1 := auth.ChefAuth(h.HandleGetAllActiveOrders, h.userStore)
-	jwtChefHandler1 := auth.JWTauth(chefHandler1, h.userStore)
-
-	chefHandler2 := auth.ChefAuth(h.ChangeOrderStatus, h.userStore)
-	jwtChefHandler2 := auth.JWTauth(chefHandler2, h.userStore)
-
-	AdminHandler3 := auth.AdminAuth(h.HandleGetAllOrders, h.userStore)
-	jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.userStore)
-
-	router.HandleFunc("/orders/place", auth.JWTauth(h.PlaceOrder, h.userStore)).Methods("POST")
-	router.HandleFunc("/orders/user", auth.JWTauth(h.HandleMyOrders, h.userStore)).Methods("GET")
-	router.HandleFunc("/orders/start", auth.JWTauth(h.CreateOrderHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/orders/chef/active", jwtChefHandler1).Methods("GET")
-	router.HandleFunc("/orders/chef/status", jwtChefHandler2).Methods("POST")
-	router.HandleFunc("/orders/chef/all", jwtAdminHandler3).Methods("GET")
-}
 
 func (h *OrderHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 

@@ -12,35 +12,22 @@ import (
 )
 
 type UserHandler struct {
-	store types.UserStore
+	Store types.UserStore
 }
 
 func NewUserHandler(store types.UserStore) *UserHandler {
-	return &UserHandler{store: store}
+	return &UserHandler{Store: store}
 }
 
-func (h *UserHandler) RegisterRoutes(router *mux.Router) {
-	adminHandler1 := auth.AdminAuth(h.HandleGetAllUsers, h.store)
-	jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.store)
 
-	adminHandler2 := auth.AdminAuth(h.ChangeUserStatus, h.store)
-	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.store)
-
-	router.HandleFunc("/client/admin/all", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/client/admin/status/{role}/{user}", jwtAdminHandler2).Methods("PATCH")
-	router.HandleFunc("/client/login", h.handleLogin).Methods("POST")
-	router.HandleFunc("/client/signup", h.handleSignup).Methods("POST")
-	router.HandleFunc("/client/userinfo", auth.JWTauth(h.HandleGetUser, h.store)).Methods("GET")
-}
-
-func (h *UserHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	var user types.LoginUser
 	if err := utils.Marshal(r, &user); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	u, err := h.store.GetUserByEmail(user.Email)
+	u, err := h.Store.GetUserByEmail(user.Email)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
 		return
@@ -59,7 +46,7 @@ func (h *UserHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token})
 }
 
-func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) HandleSignup(w http.ResponseWriter, r *http.Request) {
 	var payload types.RegisterUser
 	if err := utils.Marshal(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -76,7 +63,7 @@ func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := h.store.GetUserByEmail(payload.Email)
+	_, err := h.Store.GetUserByEmail(payload.Email)
 	if err == nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email already exists"))
 		return
@@ -88,7 +75,7 @@ func (h *UserHandler) handleSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.store.CreateNewUser(types.User{
+	err = h.Store.CreateNewUser(types.User{
 		FirstName:    payload.FirstName,
 		LastName:     payload.LastName,
 		Contact:      payload.Contact,
@@ -108,7 +95,7 @@ func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	userID := ctx.Value(auth.UserKey).(int)
 
-	user, err := h.store.GetUserById(userID)
+	user, err := h.Store.GetUserById(userID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -118,7 +105,7 @@ func (h *UserHandler) HandleGetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) HandleGetAllUsers(w http.ResponseWriter, r *http.Request) {
-	user, err := h.store.GetAllUsers()
+	user, err := h.Store.GetAllUsers()
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -137,7 +124,7 @@ func (h *UserHandler) ChangeUserStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err2 := h.store.ChangeUserStatus(user, role)
+	err2 := h.Store.ChangeUserStatus(user, role)
 	if err2 != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err2)
 		return

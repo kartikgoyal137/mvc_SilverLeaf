@@ -4,29 +4,21 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-
 	sqldriver "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
 )
 
 type CartHandler struct {
 	store     types.CartStore
-	userStore types.UserStore
+	UserStore types.UserStore
 }
 
 func NewCartHandler(store types.CartStore, userStore types.UserStore) *CartHandler {
-	return &CartHandler{store: store, userStore: userStore}
+	return &CartHandler{store: store, UserStore: userStore}
 }
 
-func (h *CartHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/cart/add", auth.JWTauth(h.AddToCartHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/cart/edit", auth.JWTauth(h.UpdateCartHandler, h.userStore)).Methods("PATCH")
-	router.HandleFunc("/cart/delete", auth.JWTauth(h.DeleteCartItemHandler, h.userStore)).Methods("DELETE")
-	router.HandleFunc("/cart/get/{orderid}", auth.JWTauth(h.GetCartItemsHandler, h.userStore)).Methods("GET")
-}
 
 func (h *CartHandler) AddToCartHandler(w http.ResponseWriter, r *http.Request) {
 
