@@ -80,7 +80,7 @@ func (s *APIServer) RegisterUserRoutes(router *mux.Router, h *controller.UserHan
 func (s *APIServer) RegisterCartRoutes(router *mux.Router, h *controller.CartHandler) {
 	router.HandleFunc("/cart/add", auth.JWTauth(h.AddToCartHandler, h.UserStore)).Methods("POST")
 	router.HandleFunc("/cart/edit", auth.JWTauth(h.UpdateCartHandler, h.UserStore)).Methods("PATCH")
-	router.HandleFunc("/cart/delete", auth.JWTauth(h.DeleteCartItemHandler, h.UserStore)).Methods("DELETE")
+	router.HandleFunc("/cart/remove", auth.JWTauth(h.DeleteCartItemHandler, h.UserStore)).Methods("POST")
 	router.HandleFunc("/cart/get/{orderid}", auth.JWTauth(h.GetCartItemsHandler, h.UserStore)).Methods("GET")
 }
 

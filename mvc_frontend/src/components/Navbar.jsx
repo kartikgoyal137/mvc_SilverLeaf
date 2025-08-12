@@ -1,4 +1,25 @@
+import React from "react"
+import { useNavigate } from "react-router-dom"
+
 export default function Navbar() {
+    const nav = useNavigate()
+
+    function Home() {
+        nav('/home')
+    }
+    function Menu() {
+        nav('/menu')
+    }
+    function Cart() {
+        nav('/checkout')
+    }
+
+    const Logout = async () => {
+    localStorage.clear('token')
+    localStorage.clear('order_id')
+    navigate('/login')
+    }
+
 
     return (    
         <>
@@ -11,17 +32,16 @@ export default function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav me-auto mx-auto mb-2 mb-lg-0">
                     <li className="nav-item">
-                    <a className="nav-link active" aria-current="page" href="#">Home</a>
+                    <a onClick={Home} className="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">Images</a>
+                    <a onClick={Menu} className="mx-4 nav-link active" href="#">Menu</a>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link disabled" aria-disabled="true">Reviews</a>
+                    <a onClick={Cart} className="nav-link active" href="#">Cart</a>
                     </li>
                 </ul>
-                <button className="btn btn-outline-success mx-2" type="submit">Login</button>
-                <button className="btn btn-outline-success mx-2" type="submit">Signup</button>
+                <button onClick={Logout} className="btn btn-outline-success mx-2" type="submit">Logout</button>
             </div>
         </div>
         </nav>

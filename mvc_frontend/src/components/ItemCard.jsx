@@ -10,7 +10,7 @@ export default function Card(props) {
         setCount(prevCount => prevCount + 1);
     };
     const handleDecrement = () => {
-        if (count > 0) {
+        if (count > 1) {
             setCount(prevCount => prevCount - 1);
         }
     };
@@ -28,7 +28,7 @@ export default function Card(props) {
     const Remove = async () => {
         try
         {
-        const res = await axios.delete(`${url}/api/v1/cart/delete`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
+        const res = await axios.post(`${url}/api/v1/cart/remove`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
         const data = res.data
         setCount(0)
         console.log(data)
@@ -47,12 +47,12 @@ export default function Card(props) {
             <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
         </div>
         <ul className="list-group list-group-flush">
-            <li className="list-group-item">Price: <button className="btn ms-2 btn-success">${props.price}</button></li>
+            <li className="list-group-item">Price: <button className="btn ms-2 btn-warning">${props.price}</button></li>
             <li className="list-group-item">{props.ing}</li>
             <li className="list-group-item d-flex justify-content-between align-items-center">
-                        <button onClick={handleDecrement} className="btn btn-danger btn-sm">-</button>
+                        <button onClick={handleDecrement} className="btn btn-warning btn-sm">-</button>
                         <span className="fw-bold fs-5">{count}</span>
-                        <button onClick={handleIncrement} className="btn btn-success btn-sm">+</button>
+                        <button onClick={handleIncrement} className="btn btn-warning btn-sm">+</button>
                     </li>
         </ul>
         <div className="card-body">

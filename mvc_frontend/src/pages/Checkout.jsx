@@ -3,9 +3,11 @@ import Navbar from '../components/Navbar'
 import HeroImg from '../assets/cafe.jpg'
 import './css/checkout.css'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Checkout() {
-   
+    
+    const nav = useNavigate()
     const url = import.meta.env.VITE_URL
     const [cartItems, setCartItems] = useState([]);
     const [total, setTotal] = useState(0)
@@ -39,14 +41,24 @@ export default function Checkout() {
     useEffect(() => {
         const fetch = async () => {
             const res = await axios.get(`${url}/api/v1/cart/get/${orderID}`, {headers : {Authorization : `${myToken}`}})
-            const data = res.data
+            let data = res.data
+            if(data===null) {
+                data=[{"product_id" : "0", "price" : "0"}]
+            }
             setCartItems(data)
-            const total = calculateSubtotal()*1.08;
-            setTotal(total)
             console.log(data)
         }
         fetch()
     }, [])
+
+    useEffect(() => {
+        let tp = 0
+        cartItems.map(m => {
+            tp += m.price * m.quantity
+        })
+        tp *= 1.08
+        setTotal(tp)
+    }, [cartItems])
 
     return (
         <>
@@ -65,20 +77,20 @@ export default function Checkout() {
                 <div className="row g-5">
                     <div className="col-md-5 col-lg-4 order-md-last">
                         <h4 className="d-flex justify-content-between align-items-center mb-3">
-                            <span className="text-primary">Your cart</span>
-                            <span className="badge bg-primary rounded-pill">{cartItems.length}</span>
+                            <span className="text-success">Your cart (8% tax)</span>
+                            <span className="badge bg-success rounded-pill">{cartItems.length}</span>
                         </h4>
-                        <ul className="list-group mb-3">
+                        <ul className="list-group mb-3 rounded-4">
                             {cartItems.map(item => (
-                                <li key={item.id} className="list-group-item d-flex justify-content-between lh-sm">
+                                <li key={item.id} className=" list-group-item d-flex justify-content-between lh-sm">
                                     <div>
-                                        <h6 className="my-0">{item.name}</h6>
-                                        <small className="text-muted">Quantity: {item.quantity}</small>
+                                        <h6 className="my-0 fs-4">{item.name}</h6>
+                                    <small className="text-muted fs-6">Quantity: {item.quantity}</small>
                                     </div>
-                                    <span className="text-muted">${(item.price * item.quantity).toFixed(2)}</span>
+                                    <span className="text-muted fs-4">${(item.price * item.quantity).toFixed(2)}</span>
                                 </li>
                             ))}
-                            <li className="list-group-item d-flex justify-content-between">
+                            <li className="fs-4 py-4 list-group-item d-flex justify-content-between">
                                 <span>Total (USD)</span>
                                 <strong>${total.toFixed(2)}</strong>
                             </li>
@@ -86,7 +98,7 @@ export default function Checkout() {
                     </div>
 
                     <div className="col-md-7 col-lg-8">
-                        <h4 className="mb-3">Billing Information</h4>
+                        <h4 className="mb-3 text-success">Billing Information</h4>
                         <form className="needs-validation px-4 py-4" noValidate onSubmit={handleSubmit}>
                             <div className="row g-3">
                                 <div className="col-12">
@@ -95,8 +107,8 @@ export default function Checkout() {
                                 </div>
 
                                 <div className="col-6">
-                                    <label htmlFor="Tip" className="form-label fs-5">Tip</label>
-                                    <input required type="number" className="form-control fs-4" id="Tip" value={formData.tip} onChange={handleInputChange}  />
+                                    <label htmlFor="tip" className="form-label fs-5">Tip</label>
+                                    <input required type="number" className="form-control fs-4" id="tip" value={formData.tip} onChange={handleInputChange}  />
                                 </div>
                                 
                                 <div className="col-6">
@@ -108,12 +120,11 @@ export default function Checkout() {
                                 <div className="col-12">
                                     <label htmlFor="description" className="form-label fs-5">Message for the chef<span className="text-muted fs-6"> (Optional)</span></label>
                                     <textarea className="form-control fs-4 " id="description" rows="3" placeholder="I don't like salt" value={formData.description} onChange={handleInputChange}></textarea>
-                                    <button type="button" className="btn btn-outline-primary btn-sm mt-2">
-                                    </button>
+                                    
                                 </div>
                             </div>
 
-                            <button className="w-50 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+                            <button className="w-50 mt-4 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
                         </form>
                     </div>
                 </div>
@@ -128,11 +139,11 @@ export default function Checkout() {
                                 <button type="button" className="btn-close" onClick={() => setShowConfirmationModal(false)}></button>
                             </div>
                             <div className="modal-body">
-                                <p>Your order has been successfully placed. A confirmation email has been sent to {formData.email}.</p>
+                                <p>Your order has been successfully placed.</p>
                                 <hr />
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowConfirmationModal(false)}>Close</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => {setShowConfirmationModal(false); nav('/home')}}>Close</button>
                             </div>
                         </div>
                     </div>

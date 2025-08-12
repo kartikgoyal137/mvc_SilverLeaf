@@ -53,6 +53,8 @@ export default function  Menu() {
                 })
         }
         else {
+            const btn = document.querySelector('.start')
+        btn.style.visibility = "hidden"
             items.forEach(item => {
                 item.style.visibility = "visible"; 
                 })
@@ -64,10 +66,12 @@ export default function  Menu() {
 
     async function StartOrder() {
         try {
+            
             setItemV(1)
             const res = await axios.post(`${url}/api/v1/orders/start`,{}, {headers: {Authorization : `${myToken}` }})
             const data = res.data
             localStorage.setItem('order_id', JSON.stringify(data.order_id))
+            
         }
         catch (err) {
             console.log(err)
@@ -79,8 +83,9 @@ export default function  Menu() {
 
     return (
         <>
+        <Navbar/>
         <div className="container-fluid hero-bg" style={{backgroundImage: `url(${HeroImg})`}}>
-            <Navbar/>
+            
             <div className="hero-overlay h-100 mb-5"></div>    
             <div className="container text-center d-flex flex-column align-items-center justify-content-center h-75">
                 <h1 className="pt-5 cormorant heading display-1 fw-bold w-75">Our Menu</h1>
@@ -93,7 +98,7 @@ export default function  Menu() {
         <div className="container d-flex justify-content-center my-5">
             {categories.map(cat => {
         return (
-            <button className='btn btn-primary mx-3' onClick={() => {handleSetCat(cat.category_id)}} key={cat.category_id}>{cat.category_name}</button>
+            <button className='btn btn-warning fs-5 fw-semibold mx-3' onClick={() => {handleSetCat(cat.category_id)}} key={cat.category_id}>{cat.category_name}</button>
         )
         })}
         </div>

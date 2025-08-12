@@ -4,19 +4,25 @@ import HeroImg from '../assets/cafe.jpg'
 import Chef from '../assets/chef.png'
 import Table from '../assets/table.png'
 import './css/home.css'
+import { useNavigate } from "react-router-dom"
 import Review from '../components/ReviewCard'
 
 export default function Home() {
+    const nav = useNavigate()
+    function Menu() {
+        nav('/menu')
+    }
 
     return (
         <>
+        <Navbar />
         <div className="container-fluid hero-bg" style={{ backgroundImage: `url(${HeroImg})`, height: "100vh" }}>
-                <Navbar />
+                
                 <div className="hero-overlay h-100"></div>
                 <div className="container text-center d-flex flex-column align-items-center justify-content-center h-75">
                     <h1 className="pt-5 cormorant heading display-1 fw-bold w-100 w-lg-75">Experience Culinary Excellence</h1>
                     <p className="fs-3 pt-4 w-100 w-lg-75">A sanctuary for the senses, where every dish is a masterpiece and every moment is cherished to create a unique experience.</p>
-                    <button className="btn btn-primary">Book a table</button>
+                    <button onClick={Menu} className="btn btn-warning fs-5 fw-bold mt-4">Book a table</button>
                 </div>
             </div>
 
