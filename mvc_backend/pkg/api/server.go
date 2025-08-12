@@ -8,6 +8,7 @@ import (
 	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"log"
 	"net/http"
+	"github.com/rs/cors"
 )
 
 type APIServer struct {
@@ -26,6 +27,14 @@ func NewAPIServer(addr string, db *sql.DB) *APIServer {
 func (s *APIServer) Run() error {
 	router := mux.NewRouter()
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173"}, 
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
+		AllowedHeaders: []string{"*"},
+	})
+
+	handler := c.Handler(subrouter)
 
 	userStore := models.NewUserDB(s.db)
 	userHandler := controller.NewUserHandler(userStore)
@@ -46,7 +55,7 @@ func (s *APIServer) Run() error {
 	log.Printf("Starting server on %s\n", s.addr)
 	s.Server = &http.Server{
 		Addr:    s.addr,
-		Handler: router,
+		Handler: handler,
 	}
 
 	err := s.Server.ListenAndServe()
@@ -82,8 +91,8 @@ func (s *APIServer) RegisterMenuRoutes(router *mux.Router, h *controller.MenuHan
 	adminHandler2 := auth.AdminAuth(h.HandleRemoveMenuItem, h.UserStore)
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.UserStore)
 
-	router.HandleFunc("/menu/cat/all", auth.JWTauth(h.AllCategories, h.UserStore)).Methods("GET")
-	router.HandleFunc("/menu/cat/{id}", auth.JWTauth(h.MenuByCategory, h.UserStore)).Methods("GET")
+	router.HandleFunc("/menu/cat/all", h.AllCategories).Methods("GET")
+	router.HandleFunc("/menu/cat/{id}", h.MenuByCategory).Methods("GET")
 	router.HandleFunc("/menu/add", jwtAdminHandler1).Methods("PATCH")
 	router.HandleFunc("/menu/remove/{product_id}", jwtAdminHandler2).Methods("DELETE")
 }
