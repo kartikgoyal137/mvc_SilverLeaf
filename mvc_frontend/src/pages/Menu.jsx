@@ -7,10 +7,12 @@ import './css/menu.css'
 import Card from '../components/ItemCard'
 
 export default function  Menu() {
-
+    const url = import.meta.env.VITE_URL
+    const [itemV, setItemV] = useState(0)
     const [category, setCategory] = useState(1)
     const [menu, setMenu] = useState([])
     const [categories, setCategories] = useState([]);
+    const myToken = JSON.parse(localStorage.getItem('token'))
 
     useEffect(() => {
         const fetch = async () => {
@@ -38,7 +40,40 @@ export default function  Menu() {
             setCategories(data)
         }
         fetch()
+        const orderID = JSON.parse(localStorage.getItem('order_id'))
+        if(orderID !== null) setItemV(1)
+        
     }, [])
+
+    useEffect(() => {
+        const items = document.querySelectorAll('.menu-item')
+        if(itemV===0) {
+            items.forEach(item => {
+                item.style.visibility = "hidden"; 
+                })
+        }
+        else {
+            items.forEach(item => {
+                item.style.visibility = "visible"; 
+                })
+        }
+            
+    }, [itemV])
+
+    
+
+    async function StartOrder() {
+        try {
+            setItemV(1)
+            const res = await axios.post(`${url}/api/v1/orders/start`,{}, {headers: {Authorization : `${myToken}` }})
+            const data = res.data
+            localStorage.setItem('order_id', JSON.stringify(data.order_id))
+        }
+        catch (err) {
+            console.log(err)
+        }
+        
+    }
 
     
 
@@ -50,7 +85,7 @@ export default function  Menu() {
             <div className="container text-center d-flex flex-column align-items-center justify-content-center h-75">
                 <h1 className="pt-5 cormorant heading display-1 fw-bold w-75">Our Menu</h1>
             <p className="fs-3 mb-5 pt-2 w-75">Experience a symphony of flavours crafted with passion and the finest ingredients</p>
-        
+            <button onClick={StartOrder} className='btn btn-primary my-5 start fs-4'>Start Order</button>
             </div>
             
             </div>
@@ -65,10 +100,10 @@ export default function  Menu() {
         
 
         <div className="container">
-            <div className="row">
+            <div className="row menu-item">
         {menu.map((item)=> {
                     return (
-                        <Card key={item.product_id} ing={item.ingredient_list} price={item.price} img={item.image_url} name={item.product_name}/>
+                        <Card className="menu-item" product_id={item.product_id} key={item.product_id} ing={item.ingredient_list} price={item.price} img={item.image_url} name={item.product_name}/>
                     )
             })}
             </div>

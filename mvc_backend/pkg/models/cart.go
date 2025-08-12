@@ -24,16 +24,16 @@ func (s *CartDB) AddToCart(place types.CartItem) error {
 
 }
 
-func (s *CartDB) GetCartItems(orderID int) ([]types.CartItem, error) {
-	rows, err := s.db.Query("SELECT * FROM serve WHERE order_id = ?", orderID)
+func (s *CartDB) GetCartItems(orderID int) ([]types.CartItemCheckout, error) {
+	rows, err := s.db.Query("SELECT s.order_id, s.product_id, s.quantity, m.price, m.product_name FROM serve AS s JOIN menu AS m ON s.product_id = m.product_id WHERE s.order_id = ?;", orderID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var cart []types.CartItem
+	var cart []types.CartItemCheckout
 	for rows.Next() {
-		c, err := scanRowIntoCart(rows)
+		c, err := scanRowIntoCartCheckout(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -63,13 +63,15 @@ func (s *CartDB) DeleteCartItem(place types.CartItem) error {
 	return nil
 }
 
-func scanRowIntoCart(rows *sql.Rows) (*types.CartItem, error) {
-	item := new(types.CartItem)
+func scanRowIntoCartCheckout(rows *sql.Rows) (*types.CartItemCheckout, error) {
+	item := new(types.CartItemCheckout)
 
 	err := rows.Scan(
 		&item.OrderID,
 		&item.ProductID,
 		&item.Quantity,
+		&item.Price,
+		&item.Name,
 	)
 
 	if err != nil {

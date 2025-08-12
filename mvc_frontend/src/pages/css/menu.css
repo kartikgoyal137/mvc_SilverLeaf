@@ -41,3 +41,11 @@ body {
 .heading {
   font-size: 6em;
 }
+
+.start {
+  background-color: aquamarine;
+}
+
+.menu-item {
+  visibility: hidden;
+}

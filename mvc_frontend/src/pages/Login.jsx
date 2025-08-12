@@ -25,8 +25,8 @@ export default function Signup() {
             localStorage.clear()
             const res = await axios.post(`${url}/api/v1/client/login`, FormData)
             const data = res.data 
-            localStorage.setItem('token', JSON.stringify(data.token)) //store in redux
-            localStorage.setItem('info', JSON.stringify(data.userInfo)) //store in redux
+            localStorage.setItem('token', JSON.stringify(data.token)) 
+            localStorage.setItem('info', JSON.stringify(data.userInfo))
             setFormData({email: '', password: ''})
             navigate('/home')
         }

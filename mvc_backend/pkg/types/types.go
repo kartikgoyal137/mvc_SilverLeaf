@@ -40,6 +40,14 @@ type CartItem struct {
 	Quantity  int `json:"quantity"`
 }
 
+type CartItemCheckout struct {
+	OrderID   int `json:"order_id"`
+	ProductID int `json:"product_id"`
+	Quantity  int `json:"quantity"`
+	Price float64 `json:"price"`
+	Name   string `json:"name"`
+}
+
 type Payment struct {
 	TransactionID int       `json:"transaction_id"`
 	OrderID       int      `json:"order_id"`
@@ -125,7 +133,7 @@ type MenuStore interface {
 
 type CartStore interface {
 	AddToCart(place CartItem) error
-	GetCartItems(orderID int) ([]CartItem, error)
+	GetCartItems(orderID int) ([]CartItemCheckout, error)
 	UpdateCartItemQuantity(place CartItem) error
 	DeleteCartItem(place CartItem) error
 }

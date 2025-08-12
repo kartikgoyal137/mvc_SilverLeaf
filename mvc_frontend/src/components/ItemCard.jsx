@@ -1,8 +1,10 @@
 import { useState } from "react";
-
+import axios from "axios";
 
 export default function Card(props) {
-
+    const orderID = JSON.parse(localStorage.getItem('order_id'))
+    const url = import.meta.env.VITE_URL
+    const myToken = JSON.parse(localStorage.getItem('token'))
     const [count, setCount] = useState(0);
     const handleIncrement = () => {
         setCount(prevCount => prevCount + 1);
@@ -12,6 +14,29 @@ export default function Card(props) {
             setCount(prevCount => prevCount - 1);
         }
     };
+
+    const Add = async () => {
+        try
+        {const res = await axios.post(`${url}/api/v1/cart/add`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
+        const data = res.data
+        console.log(data)}
+        catch (err) {
+            console.log(err)
+        }
+    }
+
+    const Remove = async () => {
+        try
+        {
+        const res = await axios.delete(`${url}/api/v1/cart/delete`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
+        const data = res.data
+        setCount(0)
+        console.log(data)
+    }
+        catch (err) {
+            console.log(err)
+        }
+    }
 
     return (
         <>
@@ -31,7 +56,8 @@ export default function Card(props) {
                     </li>
         </ul>
         <div className="card-body">
-            <button className="btn btn-success">Add to Cart</button>
+            <button onClick={Add} className="btn btn-success mt-1">Add to Cart</button>
+            <button onClick={Remove} className="btn btn-danger ms-3 mt-1">Remove</button>
         </div>
         </div>
         </>
