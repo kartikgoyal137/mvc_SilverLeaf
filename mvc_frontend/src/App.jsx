@@ -8,7 +8,9 @@ import { Routes, Route, Link } from 'react-router-dom';
 import AdminOrder from './pages/AdminOrder.jsx'
 import AdminUser from './pages/AdminUser.jsx'
 import AdminPay from './pages/AdminPay.jsx'
+import AdminMenu from './pages/AdminMenu.jsx'
 import MyOrders from './pages/MyOrders.jsx'
+import ProtectedRoute from './components/ProtectedRoutes.jsx'
 import './App.css'
 
 function App() {
@@ -18,13 +20,20 @@ function App() {
       <Route path='/home' element={<Home/>} />
       <Route path='/menu' element={<Menu/>} />
       <Route path='/' element={<Login/>} />
+      <Route path='/login' element={<Login/>} />
       <Route path='/signup' element={<Signup/>} />
-      <Route path='/checkout' element={<Checkout/>} />
-      <Route path='/myorders' element={<MyOrders/>} />
-      <Route path='/chef' element={<Chef/>} />
-      <Route path='/admin/order' element={<AdminOrder/>} />
-      <Route path='/admin/user' element={<AdminUser/>} />
-      <Route path='/admin/pay' element={<AdminPay/>} />
+
+      <Route path='/checkout' element={<ProtectedRoute allowedRoles={['customer']}><AdminOrder/></ProtectedRoute>}/>
+      <Route path='/myorders' element={<ProtectedRoute allowedRoles={['customer']}><MyOrders/></ProtectedRoute>}/>
+
+      <Route path='/chef' element={<ProtectedRoute allowedRoles={['chef']}><Chef/></ProtectedRoute>}/>
+
+      <Route path='/admin/order' element={<ProtectedRoute allowedRoles={['administrator']}><AdminOrder/></ProtectedRoute>} />
+      <Route path='/admin/user' element={<ProtectedRoute allowedRoles={['administrator']}><AdminUser/></ProtectedRoute>} />
+      <Route path='/admin' element={<ProtectedRoute allowedRoles={['administrator']}><AdminUser/></ProtectedRoute>} />
+      <Route path='/admin/pay' element={<ProtectedRoute allowedRoles={['administrator']}><AdminPay/></ProtectedRoute>} />
+      <Route path='/admin/menu' element={<ProtectedRoute allowedRoles={['administrator']}><AdminMenu/></ProtectedRoute>}/>
+
     </Routes>
     </>
   )

@@ -20,7 +20,6 @@ export default function Navbar() {
     const Logout = async () => {
     localStorage.clear('token')
     localStorage.clear('order_id')
-    localStorage.removeItem('user_id')
     navigate('/login')
     }
 

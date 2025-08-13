@@ -5,38 +5,38 @@ import axios from "axios";
 
 export default function AdminPay() {
     const url = import.meta.env.VITE_URL
-    const [orders, setOrders] = useState([])
+    const [payments, setPayments] = useState([])
     const myToken = JSON.parse(localStorage.getItem('token'))
 
 
     async function ChangeStatus(m) {
-        const role = m.status === 'Pending' ? 'Completed' : 'Pending'
-        const res = await axios.patch(`${url}/api/v1/payments/admin/status`, {"order_id" : m.order_id, "status" : `${role}`},{ headers: { Authorization: `${myToken}` } });
+        const status = m.status === 'Pending' ? 'Completed' : 'Pending'
+        const res = await axios.patch(`${url}/api/v1/payments/admin/status`, {"order_id" : m.order_id, "status" : `${status}`},{ headers: { Authorization: `${myToken}` } });
         const changed = res.data || []; 
         window.location.reload()
     }
 
     useEffect(() => {
-    const fetchOrdersAndProducts = async () => {
+    const fetchPayments = async () => {
         try {
             const res = await axios.get(`${url}/api/v1/payments/admin/all`, { headers: { Authorization: `${myToken}` } });
             const payments = res.data || []; 
 
-            setOrders(payments);
+            setPayments(payments);
 
         } catch (error) {
             console.error("Failed to fetch orders or products:", error);
         }
     };
 
-        fetchOrdersAndProducts();
+        fetchPayments();
     }, []);
 
     return (
         <>
         <NavbarAdmin/>
         <div className="container">
-            <div className="row mt-5">
+            <div className="row my-5">
                 <div className="btn btn-warning mx-2 col-1">PaymentID</div>
                 <div className="btn btn-warning mx-2 col-1">UserID</div>
                 <div className="btn btn-warning mx-2 col-1">OrderID</div>
@@ -45,7 +45,7 @@ export default function AdminPay() {
                 <div className="btn btn-warning mx-2 col-1">Tip</div>
                 <div className="btn btn-warning mx-2 col-2">Status</div>
             </div>
-            {orders.map(m => {
+            {payments.map(m => {
                 return (
                 <div className="mx-2 row my-3 ">
                     <div className="mx-2 col-1">{m.transaction_id}</div>

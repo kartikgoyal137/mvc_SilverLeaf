@@ -4,6 +4,7 @@ import HeroImg from '../assets/cafe.jpg'
 import './css/checkout.css'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Checkout() {
     
@@ -29,10 +30,11 @@ export default function Checkout() {
         const { id, value } = e.target;
         setFormData(prevData => ({ ...prevData, [id]: value }));
     };
+    const {user} = useAuth()
 
     const orderID = JSON.parse(localStorage.getItem('order_id'))
     const myToken = JSON.parse(localStorage.getItem('token'))
-    const userID = JSON.parse(localStorage.getItem('userid'))
+    const userID = user.id
 
     const handleSubmit = async (e) => {
         e.preventDefault();

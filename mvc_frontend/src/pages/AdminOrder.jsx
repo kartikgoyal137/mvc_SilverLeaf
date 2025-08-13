@@ -40,7 +40,7 @@ export default function AdminOrder() {
         <>
         <NavbarAdmin/>
         <div className="container">
-            <div className="row mt-5">
+            <div className="row my-5">
                 <div className="btn btn-warning mx-2 col-1">OrderID</div>
                 <div className="btn btn-warning mx-2 col-2">Dish / Quantity</div>
                 <div className="btn btn-warning mx-2 col-2">Timestamp</div>

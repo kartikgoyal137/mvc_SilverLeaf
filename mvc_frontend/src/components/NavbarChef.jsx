@@ -7,7 +7,6 @@ export default function NavbarChef() {
     const Logout = async () => {
     localStorage.removeItem('token')
     localStorage.removeItem('order_id')
-    localStorage.removeItem('user_id')
     navigate('/login')
     }
 

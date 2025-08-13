@@ -44,7 +44,7 @@ func (h *UserHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	userID := strconv.Itoa(u.UserID)
 
-	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token, "user_id" : userID})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token, "user_id" : userID, "role" : u.Role, "name" : u.FirstName})
 }
 
 func (h *UserHandler) HandleSignup(w http.ResponseWriter, r *http.Request) {

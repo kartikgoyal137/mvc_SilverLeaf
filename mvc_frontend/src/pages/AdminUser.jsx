@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default function AdminUser() {
     const url = import.meta.env.VITE_URL
-    const [orders, setOrders] = useState([])
+    const [users, setUsers] = useState([])
     const myToken = JSON.parse(localStorage.getItem('token'))
 
     async function ChangeRole(m) {
@@ -33,33 +33,33 @@ export default function AdminUser() {
     }
 
     useEffect(() => {
-    const fetchOrdersAndProducts = async () => {
+    const fetchUsers = async () => {
         try {
             const res = await axios.get(`${url}/api/v1/client/admin/all`, { headers: { Authorization: `${myToken}` } });
-            const payments = res.data || []; 
+            const usersdata = res.data || []; 
 
-            setOrders(payments);
+            setUsers(usersdata);
 
         } catch (error) {
             console.error("Failed to fetch orders or products:", error);
         }
     };
 
-        fetchOrdersAndProducts();
+        fetchUsers();
     }, []);
 
     return (
         <>
         <NavbarAdmin/>
         <div className="container">
-            <div className="row mt-5">
+            <div className="row my-5">
                 <div className="btn btn-warning mx-2 col-1">UserID</div>
                 <div className="btn btn-warning mx-2 col-2">Name</div>
                 <div className="btn btn-warning mx-2 col-2">Contact</div>
                 <div className="btn btn-warning mx-2 col-3">Email</div>
                 <div className="btn btn-warning mx-2 col-2">Role</div>
             </div>
-            {orders.map(m => {
+            {users.map(m => {
                 return (
                 <div className="mx-2 row my-3 ">
                     <div className="mx-2 col-1">{m.user_id}</div>
