@@ -1,23 +1,11 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import { Link } from "react-router-dom"
 
 export default function Navbar() {
     const nav = useNavigate()
     const {logout} = useAuth()
-
-    function Home() {
-        nav('/home')
-    }
-    function Menu() {
-        nav('/menu')
-    }
-    function Cart() {
-        nav('/checkout')
-    }
-    function Orders() {
-        nav('/myorders')
-    }
 
     const Logout = async () => {
     localStorage.clear('token')
@@ -38,16 +26,16 @@ export default function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav me-auto mx-auto mb-2 mb-lg-0">
                     <li className="nav-item">
-                    <a onClick={Home} className="mx-4 nav-link active" aria-current="page" href="#">Home</a>
+                    <Link to='/home' className="mx-4 nav-link active" aria-current="page" >Home</Link>
                     </li>
                     <li className="nav-item">
-                    <a onClick={Menu} className="mx-4 nav-link active" href="#">Menu</a>
+                    <Link to='/menu' className="mx-4 nav-link active">Menu</Link>
                     </li>
                     <li className="nav-item">
-                    <a onClick={Cart} className=" mx-4 nav-link active" href="#">Cart</a>
+                    <Link to='/checkout' className=" mx-4 nav-link active">Cart</Link>
                     </li>
                     <li className="nav-item">
-                    <a onClick={Orders} className="mx-4 nav-link active" href="#">Orders</a>
+                    <Link to='/myorders' className="mx-4 nav-link active">Orders</Link>
                     </li>
                 </ul>
                 <button onClick={Logout} className="btn btn-outline-success mx-2" type="submit">Logout</button>

@@ -18,6 +18,9 @@ export default function NavbarAdmin() {
     function Menu() {
         nav('/admin/menu')
     }
+    function Home() {
+        nav('/home')
+    }
 
     const Logout = async () => {
     localStorage.removeItem('token')
@@ -37,6 +40,9 @@ export default function NavbarAdmin() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav me-auto mx-auto mb-2 mb-lg-0">
+                    <li className="nav-item">
+                    <a onClick={Home} className="mx-4 nav-link active" href="#">Home</a>
+                    </li>
                     <li className="nav-item">
                     <a onClick={Users} className="mx-4 nav-link active" aria-current="page" href="#">Users</a>
                     </li>

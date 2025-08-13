@@ -23,8 +23,8 @@ function App() {
       <Route path='/login' element={<Login/>} />
       <Route path='/signup' element={<Signup/>} />
 
-      <Route path='/checkout' element={<ProtectedRoute allowedRoles={['customer']}><Checkout/></ProtectedRoute>}/>
-      <Route path='/myorders' element={<ProtectedRoute allowedRoles={['customer']}><MyOrders/></ProtectedRoute>}/>
+      <Route path='/checkout' element={<ProtectedRoute allowedRoles={['customer', 'chef', 'administrator']}><Checkout/></ProtectedRoute>}/>
+      <Route path='/myorders' element={<ProtectedRoute allowedRoles={['customer', 'chef', 'administrator']}><MyOrders/></ProtectedRoute>}/>
 
       <Route path='/chef' element={<ProtectedRoute allowedRoles={['chef']}><Chef/></ProtectedRoute>}/>
 
