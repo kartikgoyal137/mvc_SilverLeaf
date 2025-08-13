@@ -1,8 +1,10 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 export default function Navbar() {
     const nav = useNavigate()
+    const {logout} = useAuth()
 
     function Home() {
         nav('/home')
@@ -20,7 +22,8 @@ export default function Navbar() {
     const Logout = async () => {
     localStorage.clear('token')
     localStorage.clear('order_id')
-    navigate('/login')
+    logout()
+    nav('/login')
     }
 
 

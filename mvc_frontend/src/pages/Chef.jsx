@@ -27,11 +27,9 @@ export default function Chef() {
         }
         const res = await axios.post(`${url}/api/v1/orders/chef/status`, {"order_id" : m.order_id, "status" : `${newStatus}`},{ headers: { Authorization: `${myToken}` } });
         const changed = res.data || []; 
-        window.location.reload()
+        fetchOrdersAndProducts()
     }
 
-
-    useEffect(() => {
     const fetchOrdersAndProducts = async () => {
         try {
             const res = await axios.get(`${url}/api/v1/orders/chef/active`, { headers: { Authorization: `${myToken}` } });
@@ -55,6 +53,7 @@ export default function Chef() {
         }
     };
 
+    useEffect(() => {
         fetchOrdersAndProducts();
     }, []);
 

@@ -1,4 +1,14 @@
+import { useNavigate } from "react-router-dom"
+
 export default function Navbar() {
+    const nav = useNavigate()
+
+    function log() {
+        nav('/login')
+    }
+    function sign() {
+        nav('/signup')
+    }
 
     return (    
         <>
@@ -9,8 +19,8 @@ export default function Navbar() {
                 <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                <button className="btn btn-outline-success mx-2" type="submit">Login</button>
-                <button className="btn btn-outline-success mx-2" type="submit">Signup</button>
+                <button onClick={log} className="btn btn-outline-success mx-2 ms-auto" type="submit">Login</button>
+                <button onClick={sign} className="btn btn-outline-success mx-2" type="submit">Signup</button>
             </div>
         </div>
         </nav>

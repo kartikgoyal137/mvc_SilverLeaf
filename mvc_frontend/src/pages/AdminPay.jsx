@@ -13,10 +13,9 @@ export default function AdminPay() {
         const status = m.status === 'Pending' ? 'Completed' : 'Pending'
         const res = await axios.patch(`${url}/api/v1/payments/admin/status`, {"order_id" : m.order_id, "status" : `${status}`},{ headers: { Authorization: `${myToken}` } });
         const changed = res.data || []; 
-        window.location.reload()
+        fetchPayments()
     }
 
-    useEffect(() => {
     const fetchPayments = async () => {
         try {
             const res = await axios.get(`${url}/api/v1/payments/admin/all`, { headers: { Authorization: `${myToken}` } });
@@ -28,6 +27,9 @@ export default function AdminPay() {
             console.error("Failed to fetch orders or products:", error);
         }
     };
+
+    useEffect(() => {
+    
 
         fetchPayments();
     }, []);

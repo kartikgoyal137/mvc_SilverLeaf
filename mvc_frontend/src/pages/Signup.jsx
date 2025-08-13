@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Navbar from '../components/Navbar'
+import Navbar2 from '../components/Navbar2'
 import HeroImg from '../assets/cafe.jpg'
 import './css/login.css'
 import axios from "axios"
@@ -42,7 +42,7 @@ export default function Signup() {
     return (
 
 <>
-<Navbar/>
+<Navbar2/>
 
 <div className="container-fluid  hero-bg" style={{ backgroundImage: `url(${HeroImg})`, height: "100vh"}}>
     <div className="container-fluid glass">

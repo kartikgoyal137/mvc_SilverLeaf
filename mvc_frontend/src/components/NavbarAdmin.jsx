@@ -1,8 +1,10 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 export default function NavbarAdmin() {
     const nav = useNavigate()
+    const {logout} = useAuth()
 
     function Users() {
         nav('/admin/user')
@@ -20,7 +22,8 @@ export default function NavbarAdmin() {
     const Logout = async () => {
     localStorage.removeItem('token')
     localStorage.removeItem('order_id')
-    navigate('/login')
+    logout()
+    nav('/login')
     }
 
 
