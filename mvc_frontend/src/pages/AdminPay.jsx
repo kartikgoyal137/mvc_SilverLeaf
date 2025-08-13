@@ -9,6 +9,13 @@ export default function AdminPay() {
     const myToken = JSON.parse(localStorage.getItem('token'))
 
 
+    async function ChangeStatus(m) {
+        const role = m.status === 'Pending' ? 'Completed' : 'Pending'
+        const res = await axios.patch(`${url}/api/v1/payments/admin/status`, {"order_id" : m.order_id, "status" : `${role}`},{ headers: { Authorization: `${myToken}` } });
+        const changed = res.data || []; 
+        window.location.reload()
+    }
+
     useEffect(() => {
     const fetchOrdersAndProducts = async () => {
         try {
@@ -47,7 +54,7 @@ export default function AdminPay() {
                     <div className="mx-2 col-1">{m.food_total}</div>
                     <div className="mx-2 col-2">{m.created_at}</div>
                     <div className="mx-2 col-1">{m.tip}</div>
-                    <div className="btn btn-success mx-2 col-2">{m.status}</div>
+                    <div onClick={() => {ChangeStatus(m)}} className="btn btn-success mx-2 col-2">{m.status}</div>
                 </div>
                 )
             })}

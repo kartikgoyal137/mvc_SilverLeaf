@@ -8,6 +8,28 @@ export default function Chef() {
     const [orders, setOrders] = useState([])
     const myToken = JSON.parse(localStorage.getItem('token'))
 
+    async function ChangeStatus(m) {
+        let newStatus;
+
+        switch (m.status) {
+        case 'Yet to start':
+            newStatus = 'Cooking';
+            break;
+        case 'Cooking':
+            newStatus = 'Completed';
+            break;
+        case 'Completed':
+            newStatus = 'Yet to start';
+            break;
+        default:
+            newStatus = 'Yet to start'; 
+            break;
+        }
+        const res = await axios.post(`${url}/api/v1/orders/chef/status`, {"order_id" : m.order_id, "status" : `${newStatus}`},{ headers: { Authorization: `${myToken}` } });
+        const changed = res.data || []; 
+        window.location.reload()
+    }
+
 
     useEffect(() => {
     const fetchOrdersAndProducts = async () => {
@@ -61,7 +83,7 @@ export default function Chef() {
                 <div className="mx-2 col-2">{m.created_at}</div>
                 <div className="mx-2 col-2">{m.instructions}</div>
                 <div className="mx-2 col-1">{m.table_no}</div>
-                <div className="btn btn-success mx-2 col-2">{m.status}</div>
+                <div onClick={() => {ChangeStatus(m)}} className="btn btn-success mx-2 col-2">{m.status}</div>
                 </div>
                 )
             })}
