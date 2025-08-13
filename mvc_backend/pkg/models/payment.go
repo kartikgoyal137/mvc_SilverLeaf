@@ -77,7 +77,7 @@ func (s *PaymentDB) ChangePayStatus(orderId int, status string) error {
 
 func (s *PaymentDB) CalculateTotal(orderId int) (float64, error) {
 	var total float64
-	row := s.db.QueryRow("SELECT SUM(s.quantity * m.price) FROM serve AS s JOIN menu AS m ON s.product_id = m.product_id WHERE s.order_id = ?;", orderId)
+	row := s.db.QueryRow("SELECT COALESCE(SUM(s.quantity * m.price), 0) FROM serve AS s JOIN menu AS m ON s.product_id = m.product_id WHERE s.order_id = ?;", orderId)
 	err := row.Scan(&total)
 	if err != nil {
 		return 0, err

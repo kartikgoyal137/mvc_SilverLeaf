@@ -19,10 +19,23 @@ export default function Checkout() {
         description : "",
         tip : ""
     });
+    const {user} = useAuth()
+
+    const orderID = JSON.parse(localStorage.getItem('order_id'))
+    const myToken = JSON.parse(localStorage.getItem('token'))
+    const userID = user.id
     
 
-    const calculateSubtotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const calculateSubtotal = async () => {
+        if (!orderID) {
+            console.error("No Order ID found. Cannot fetch cart items.");
+            return; 
+        }
+        const res = await axios.get(`${url}/api/v1/payments/total/${orderID}`, {headers: {Authorization: `${myToken}`}})
+        const data = res.data || 0
+        console.log(data)
+        const ans =  parseInt(data, 10)*1.08
+        return ans.toFixed(2)
     };
     
 
@@ -30,14 +43,15 @@ export default function Checkout() {
         const { id, value } = e.target;
         setFormData(prevData => ({ ...prevData, [id]: value }));
     };
-    const {user} = useAuth()
-
-    const orderID = JSON.parse(localStorage.getItem('order_id'))
-    const myToken = JSON.parse(localStorage.getItem('token'))
-    const userID = user.id
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if(cartItems.length === 0) {
+            alert("please order something")
+            nav('/menu')
+            return
+        }
         const res1 =  await axios.post(`${url}/api/v1/orders/place`, {"order_id" : orderID, "table_no" : parseInt(formData.table_no, 10), "tip" : parseInt(formData.tip,10), "instructions" : formData.description}, {headers: {Authorization: `${myToken}`}})
         const data1 = res1.data
         const res2 =  await axios.post(`${url}/api/v1/payments/new`, {"order_id" : orderID, "user_id" : parseInt(userID,10), "food_total" : total, "tip" : parseInt(formData.tip,10)}, {headers: {Authorization: `${myToken}`}})
@@ -49,7 +63,12 @@ export default function Checkout() {
     
 
     useEffect(() => {
+
         const fetch = async () => {
+            if (!orderID) {
+            console.error("No Order ID found. Cannot fetch cart items.");
+            return;
+        }
             const res = await axios.get(`${url}/api/v1/cart/get/${orderID}`, {headers : {Authorization : `${myToken}`}})
             let data = res.data
             if(data===null) {
@@ -61,13 +80,14 @@ export default function Checkout() {
         fetch()
     }, [])
 
-    useEffect(() => {
-        let tp = 0
-        cartItems.map(m => {
-            tp += m.price * m.quantity
-        })
-        tp *= 1.08
-        setTotal(tp)
+    useEffect( () => {
+        const fetchSubtotal = async () => {
+        const tp = await calculateSubtotal();
+        const ans = parseInt(tp, 10)
+        setTotal(ans);
+    };
+
+    fetchSubtotal();
     }, [cartItems])
 
     return (
@@ -102,7 +122,7 @@ export default function Checkout() {
                             ))}
                             <li className="fs-4 py-4 list-group-item d-flex justify-content-between">
                                 <span>Total (USD)</span>
-                                <strong>${total.toFixed(2)}</strong>
+                                <strong>${total}</strong>
                             </li>
                         </ul>
                     </div>
@@ -134,7 +154,7 @@ export default function Checkout() {
                                 </div>
                             </div>
 
-                            <button className="w-50 mt-4 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+                            <button onClick={handleSubmit} className="w-50 mt-4 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
                         </form>
                     </div>
                 </div>
