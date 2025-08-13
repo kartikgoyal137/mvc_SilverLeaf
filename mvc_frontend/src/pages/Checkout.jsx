@@ -14,9 +14,9 @@ export default function Checkout() {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
     const [formData, setFormData] = useState({
-        table_no : 0,
+        table_no : "",
         description : "",
-        tip : 0
+        tip : ""
     });
     
 
@@ -30,20 +30,28 @@ export default function Checkout() {
         setFormData(prevData => ({ ...prevData, [id]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const orderID = JSON.parse(localStorage.getItem('order_id'))
+    const myToken = JSON.parse(localStorage.getItem('token'))
+    const userID = JSON.parse(localStorage.getItem('userid'))
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const res1 =  await axios.post(`${url}/api/v1/orders/place`, {"order_id" : orderID, "table_no" : parseInt(formData.table_no, 10), "tip" : parseInt(formData.tip,10), "instructions" : formData.description}, {headers: {Authorization: `${myToken}`}})
+        const data1 = res1.data
+        const res2 =  await axios.post(`${url}/api/v1/payments/new`, {"order_id" : orderID, "user_id" : parseInt(userID,10), "food_total" : total, "tip" : parseInt(formData.tip,10)}, {headers: {Authorization: `${myToken}`}})
+        const data2 = res2.data
+        localStorage.removeItem('order_id')
         setShowConfirmationModal(true);
     };
 
-    const orderID = JSON.parse(localStorage.getItem('order_id'))
-    const myToken = JSON.parse(localStorage.getItem('token'))
+    
 
     useEffect(() => {
         const fetch = async () => {
             const res = await axios.get(`${url}/api/v1/cart/get/${orderID}`, {headers : {Authorization : `${myToken}`}})
             let data = res.data
             if(data===null) {
-                data=[{"product_id" : "0", "price" : "0"}]
+                data=[]
             }
             setCartItems(data)
             console.log(data)

@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import NavbarChef from "../components/NavbarChef";
+import Navbar from "../components/Navbar";
 import axios from "axios";
 
-export default function Chef() {
+export default function MyOrders() {
     const url = import.meta.env.VITE_URL
     const [orders, setOrders] = useState([])
     const myToken = JSON.parse(localStorage.getItem('token'))
@@ -12,7 +12,7 @@ export default function Chef() {
     useEffect(() => {
     const fetchOrdersAndProducts = async () => {
         try {
-            const res = await axios.get(`${url}/api/v1/orders/chef/active`, { headers: { Authorization: `${myToken}` } });
+            const res = await axios.get(`${url}/api/v1/orders/user`, { headers: { Authorization: `${myToken}` } });
             const initialOrders = res.data || []; 
 
             const populatedOrdersPromises = initialOrders.map(async (order) => {
@@ -38,7 +38,7 @@ export default function Chef() {
 
     return (
         <>
-        <NavbarChef/>
+        <Navbar/>
         <div className="container">
             <div className="row mt-5">
                 <div className="btn btn-warning mx-2 col-1">OrderID</div>

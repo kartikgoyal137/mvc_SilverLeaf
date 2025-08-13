@@ -64,14 +64,14 @@ func (s *APIServer) Run() error {
 }
 
 func (s *APIServer) RegisterUserRoutes(router *mux.Router, h *controller.UserHandler) {
-	adminHandler1 := auth.AdminAuth(h.HandleGetAllUsers, h.Store)
-	jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.Store)
+	// adminHandler1 := auth.AdminAuth(h.HandleGetAllUsers, h.Store)
+	// jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.Store)
 
-	adminHandler2 := auth.AdminAuth(h.ChangeUserStatus, h.Store)
-	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.Store)
+	// adminHandler2 := auth.AdminAuth(h.ChangeUserStatus, h.Store)
+	// jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.Store)
 
-	router.HandleFunc("/client/admin/all", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/client/admin/status/{role}/{user}", jwtAdminHandler2).Methods("PATCH")
+	router.HandleFunc("/client/admin/all", auth.JWTauth(h.HandleGetAllUsers, h.Store)).Methods("GET")
+	router.HandleFunc("/client/admin/status/{role}/{user}", auth.JWTauth(h.ChangeUserStatus, h.Store)).Methods("PATCH")
 	router.HandleFunc("/client/login", h.HandleLogin).Methods("POST")
 	router.HandleFunc("/client/signup", h.HandleSignup).Methods("POST")
 	router.HandleFunc("/client/userinfo", auth.JWTauth(h.HandleGetUser, h.Store)).Methods("GET")
@@ -98,32 +98,32 @@ func (s *APIServer) RegisterMenuRoutes(router *mux.Router, h *controller.MenuHan
 }
 
 func (s *APIServer) RegisterOrderRoutes(router *mux.Router, h *controller.OrderHandler) {
-	chefHandler1 := auth.ChefAuth(h.HandleGetAllActiveOrders, h.UserStore)
-	jwtChefHandler1 := auth.JWTauth(chefHandler1, h.UserStore)
+	// chefHandler1 := auth.ChefAuth(h.HandleGetAllActiveOrders, h.UserStore)
+	// jwtChefHandler1 := auth.JWTauth(chefHandler1, h.UserStore)
 
-	chefHandler2 := auth.ChefAuth(h.ChangeOrderStatus, h.UserStore)
-	jwtChefHandler2 := auth.JWTauth(chefHandler2, h.UserStore)
+	// chefHandler2 := auth.ChefAuth(h.ChangeOrderStatus, h.UserStore)
+	// jwtChefHandler2 := auth.JWTauth(chefHandler2, h.UserStore)
 
-	AdminHandler3 := auth.AdminAuth(h.HandleGetAllOrders, h.UserStore)
-	jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.UserStore)
+	// AdminHandler3 := auth.AdminAuth(h.HandleGetAllOrders, h.UserStore)
+	// jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.UserStore)
 
 	router.HandleFunc("/orders/place", auth.JWTauth(h.PlaceOrder, h.UserStore)).Methods("POST")
 	router.HandleFunc("/orders/user", auth.JWTauth(h.HandleMyOrders, h.UserStore)).Methods("GET")
 	router.HandleFunc("/orders/start", auth.JWTauth(h.CreateOrderHandler, h.UserStore)).Methods("POST")
-	router.HandleFunc("/orders/chef/active", jwtChefHandler1).Methods("GET")
-	router.HandleFunc("/orders/chef/status", jwtChefHandler2).Methods("POST")
-	router.HandleFunc("/orders/chef/all", jwtAdminHandler3).Methods("GET")
+	router.HandleFunc("/orders/chef/active", auth.JWTauth(h.HandleGetAllActiveOrders, h.UserStore)).Methods("GET")
+	router.HandleFunc("/orders/chef/status", auth.JWTauth(h.ChangeOrderStatus, h.UserStore)).Methods("POST")
+	router.HandleFunc("/orders/admin/all", auth.JWTauth(h.HandleGetAllOrders, h.UserStore)).Methods("GET")
 }
 
 func (s *APIServer) RegisterPaymentRoutes(router *mux.Router, h *controller.PaymentHandler) {
-	adminHandler1 := auth.AdminAuth(h.HandleGetAllPayments, h.UserStore)
-	jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.UserStore)
+	// adminHandler1 := auth.AdminAuth(h.HandleGetAllPayments, h.UserStore)
+	// jwtAdminHandler1 := auth.JWTauth(adminHandler1, h.UserStore)
 
-	adminHandler2 := auth.AdminAuth(h.ChangePaymentStatus, h.UserStore)
-	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.UserStore)
+	// adminHandler2 := auth.AdminAuth(h.ChangePaymentStatus, h.UserStore)
+	// jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.UserStore)
 
-	router.HandleFunc("/payments/admin/all", jwtAdminHandler1).Methods("GET")
-	router.HandleFunc("/payments/admin/status", jwtAdminHandler2).Methods("PATCH")
+	router.HandleFunc("/payments/admin/all", auth.JWTauth(h.HandleGetAllPayments, h.UserStore)).Methods("GET")
+	router.HandleFunc("/payments/admin/status", auth.JWTauth(h.ChangePaymentStatus, h.UserStore)).Methods("PATCH")
 	router.HandleFunc("/payments/user", auth.JWTauth(h.HandleGetPayByUser, h.UserStore)).Methods("GET")
 	router.HandleFunc("/payments/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal, h.UserStore)).Methods("GET")
 	router.HandleFunc("/payments/new", auth.JWTauth(h.HandleNewPayment, h.UserStore)).Methods("POST")

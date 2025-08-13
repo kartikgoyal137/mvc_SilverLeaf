@@ -14,7 +14,7 @@ func NewOrderDB(db *sql.DB) *OrderDB {
 }
 
 func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
-	rows, err := s.db.Query("SELECT * FROM orders")
+	rows, err := s.db.Query("SELECT * FROM orders WHERE table_no > 0")
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (s *OrderDB) GetAllOrders() ([]types.Order, error) {
 }
 
 func (s *OrderDB) GetAllActiveOrders() ([]types.Order, error) {
-	rows, err := s.db.Query("SELECT * FROM orders where status IN (?,?)", "Yet to start", "Cooking")
+	rows, err := s.db.Query("SELECT * FROM orders where status IN (?,?) AND table_no > 0", "Yet to start", "Cooking")
 	if err != nil {
 		return nil, err
 	}

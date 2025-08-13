@@ -23,15 +23,15 @@ type Order struct {
 	UserID       int      `json:"user_id"`
 	Status       string    `json:"status"` // "Yet to start", "Cooking", "Completed"
 	CreatedAt    time.Time `json:"created_at"`
-	Instructions string    `json:"instructions"`
-	TableNo      int      `json:"table_no"`
+	Instructions *string    `json:"instructions"`
+	TableNo      *int      `json:"table_no"`
 }
 
 type CreateOrder struct {
 	OrderID      int    `json:"order_id"`
-	TableNo      int   `json:"table_no"`
+	TableNo      *int   `json:"table_no"`
 	Tip          *int   `json:"tip"`
-	Instructions string `json:"instructions"`
+	Instructions *string `json:"instructions"`
 }
 
 type CartItem struct {

@@ -42,8 +42,9 @@ func (h *UserHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
+	userID := strconv.Itoa(u.UserID)
 
-	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token, "user_id" : userID})
 }
 
 func (h *UserHandler) HandleSignup(w http.ResponseWriter, r *http.Request) {
