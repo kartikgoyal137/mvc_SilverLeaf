@@ -26,9 +26,11 @@ FROM alpine:latest
 
 WORKDIR /app
 
+RUN mkdir -p /app/static
+
 COPY --from=backend-builder /server .
 
-COPY --from=frontend-builder /app/frontend/dist ./static
+COPY --from=frontend-builder /app/frontend/dist /app/static
 
 COPY mvc_backend/.env.sample ./.env
 

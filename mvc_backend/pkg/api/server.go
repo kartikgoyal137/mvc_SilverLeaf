@@ -45,7 +45,7 @@ func (s *APIServer) Run() error {
 	paymentHandler := controller.NewPaymentHandler(models.NewPaymentDB(s.db), userStore)
 	s.RegisterPaymentRoutes(subrouter, paymentHandler)
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static")))
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/app/static")))
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:5173", "http://localhost:8080"}, 
