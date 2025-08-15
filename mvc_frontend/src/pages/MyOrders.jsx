@@ -12,11 +12,11 @@ export default function MyOrders() {
     useEffect(() => {
     const fetchOrdersAndProducts = async () => {
         try {
-            const res = await axios.get(`${url}/api/v1/orders/user`, { headers: { Authorization: `${myToken}` } });
+            const res = await axios.get(`/api/v1/orders/user`, { headers: { Authorization: `${myToken}` } });
             const initialOrders = res.data || []; 
 
             const populatedOrdersPromises = initialOrders.map(async (order) => {
-                const productsRes = await axios.get(`${url}/api/v1/cart/get/${order.order_id}`, { headers: { Authorization: `${myToken}` } });
+                const productsRes = await axios.get(`/api/v1/cart/get/${order.order_id}`, { headers: { Authorization: `${myToken}` } });
                 
                 return {
                     ...order,

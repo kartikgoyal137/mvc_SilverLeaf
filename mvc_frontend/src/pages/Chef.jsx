@@ -25,18 +25,18 @@ export default function Chef() {
             newStatus = 'Yet to start'; 
             break;
         }
-        const res = await axios.post(`${url}/api/v1/orders/chef/status`, {"order_id" : m.order_id, "status" : `${newStatus}`},{ headers: { Authorization: `${myToken}` } });
+        const res = await axios.post(`/api/v1/orders/chef/status`, {"order_id" : m.order_id, "status" : `${newStatus}`},{ headers: { Authorization: `${myToken}` } });
         const changed = res.data || []; 
         fetchOrdersAndProducts()
     }
 
     const fetchOrdersAndProducts = async () => {
         try {
-            const res = await axios.get(`${url}/api/v1/orders/chef/active`, { headers: { Authorization: `${myToken}` } });
+            const res = await axios.get(`/api/v1/orders/chef/active`, { headers: { Authorization: `${myToken}` } });
             const initialOrders = res.data || []; 
 
             const populatedOrdersPromises = initialOrders.map(async (order) => {
-                const productsRes = await axios.get(`${url}/api/v1/cart/get/${order.order_id}`, { headers: { Authorization: `${myToken}` } });
+                const productsRes = await axios.get(`/api/v1/cart/get/${order.order_id}`, { headers: { Authorization: `${myToken}` } });
                 
                 return {
                     ...order,

@@ -26,7 +26,7 @@ export default function Signup() {
         try {
             e.preventDefault()
             localStorage.clear()
-            const res = await axios.post(`${url}/api/v1/client/login`, FormData)
+            const res = await axios.post(`/api/v1/client/login`, FormData)
             const data = res.data 
             localStorage.setItem('token', JSON.stringify(data.token)) 
             setFormData({email: '', password: ''})

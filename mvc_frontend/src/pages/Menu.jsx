@@ -16,7 +16,7 @@ export default function  Menu() {
 
     useEffect(() => {
         const fetch = async () => {
-            const response = await axios.get(`http://localhost:8080/api/v1/menu/cat/${category}`)
+            const response = await axios.get(`/api/v1/menu/cat/${category}`)
             const data = response.data
             setMenu(data)
         }
@@ -28,7 +28,7 @@ export default function  Menu() {
     }
 
     async function fetchCategories() {
-        const response = await axios.get(`http://localhost:8080/api/v1/menu/cat/all`)
+        const response = await axios.get(`/api/v1/menu/cat/all`)
         const data = await response.data
         return data
     }
@@ -68,7 +68,7 @@ export default function  Menu() {
         try {
             
             setItemV(1)
-            const res = await axios.post(`${url}/api/v1/orders/start`,{}, {headers: {Authorization : `${myToken}` }})
+            const res = await axios.post(`/api/v1/orders/start`,{}, {headers: {Authorization : `${myToken}` }})
             const data = res.data
             localStorage.setItem('order_id', JSON.stringify(data.order_id))
             

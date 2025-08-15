@@ -18,7 +18,7 @@ export default function Card(props) {
 
     const Add = async () => {
         try
-        {const res = await axios.post(`${url}/api/v1/cart/add`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
+        {const res = await axios.post(`/api/v1/cart/add`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
         const data = res.data
         console.log(data)}
         catch (err) {
@@ -29,7 +29,7 @@ export default function Card(props) {
     const Remove = async () => {
         try
         {
-        const res = await axios.post(`${url}/api/v1/cart/remove`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
+        const res = await axios.post(`/api/v1/cart/remove`,{"order_id": orderID, "product_id": props.product_id, "quantity": count} ,{headers: {Authorization : `${myToken}` }})
         const data = res.data
         setCount(0)
         console.log(data)

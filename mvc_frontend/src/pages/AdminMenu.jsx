@@ -43,7 +43,7 @@ export default function AdminMenu () {
                 category_id: parseInt(addItemData.category_id, 10),
                 price: parseFloat(addItemData.price)
             };
-            const res = await axios.patch(`${url}/api/v1/menu/add`, payload, {
+            const res = await axios.patch(`/api/v1/menu/add`, payload, {
                 headers: { Authorization: `${myToken}` }
             })
             setAddSuccess("Item added successfully!")
@@ -69,7 +69,7 @@ export default function AdminMenu () {
         setRemoveError('')
         setRemoveSuccess('')
         try {
-            const res = await axios.delete(`${url}/api/v1/menu/remove/${removeItemData.product_id}`, {
+            const res = await axios.delete(`/api/v1/menu/remove/${removeItemData.product_id}`, {
                 headers: { Authorization: `${myToken}` }
             })
             setRemoveSuccess("Item removed successfully!")

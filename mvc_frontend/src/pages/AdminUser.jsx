@@ -27,14 +27,14 @@ export default function AdminUser() {
         }
         
         const id = String(m.user_id)
-        const res = await axios.patch(`${url}/api/v1/client/admin/status/${newRole}/${id}`,{} ,{ headers: { Authorization: `${myToken}` } });
+        const res = await axios.patch(`/api/v1/client/admin/status/${newRole}/${id}`,{} ,{ headers: { Authorization: `${myToken}` } });
         const changed = res.data || []; 
         fetchUsers()
     }
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get(`${url}/api/v1/client/admin/all`, { headers: { Authorization: `${myToken}` } });
+            const res = await axios.get(`/api/v1/client/admin/all`, { headers: { Authorization: `${myToken}` } });
             const usersdata = res.data || []; 
 
             setUsers(usersdata);

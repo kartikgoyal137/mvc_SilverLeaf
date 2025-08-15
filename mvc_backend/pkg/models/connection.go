@@ -21,9 +21,13 @@ func InitDatabase() (*sql.DB, error) {
 	cfg.User = os.Getenv("DBUSER")
 	cfg.Passwd = os.Getenv("DBPASS")
 	cfg.Net = "tcp"
-	cfg.Addr = "127.0.0.1:3306"
 	cfg.DBName = os.Getenv("DBNAME")
 	cfg.ParseTime = true
+	dbHost := os.Getenv("DBHOST")
+	if dbHost == "" {
+		dbHost = "127.0.0.1"
+	}
+	cfg.Addr = dbHost + ":3306"
 
 	var err error
 	DB, err = sql.Open("mysql", cfg.FormatDSN())

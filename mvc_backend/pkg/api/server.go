@@ -28,13 +28,6 @@ func (s *APIServer) Run() error {
 	router := mux.NewRouter()
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:5173"}, 
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
-		AllowedHeaders: []string{"*"},
-	})
-
-	handler := c.Handler(subrouter)
 
 	userStore := models.NewUserDB(s.db)
 	userHandler := controller.NewUserHandler(userStore)
@@ -51,6 +44,16 @@ func (s *APIServer) Run() error {
 
 	paymentHandler := controller.NewPaymentHandler(models.NewPaymentDB(s.db), userStore)
 	s.RegisterPaymentRoutes(subrouter, paymentHandler)
+
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static")))
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173", "http://localhost:8080"}, 
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
+		AllowedHeaders: []string{"*"},
+	})
+
+	handler := c.Handler(router)
 
 	log.Printf("Starting server on %s\n", s.addr)
 	s.Server = &http.Server{

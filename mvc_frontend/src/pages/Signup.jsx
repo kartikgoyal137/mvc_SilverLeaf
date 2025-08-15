@@ -25,7 +25,7 @@ export default function Signup() {
     const handleSubmit = async (e) => {
         try {
             e.preventDefault()
-            const res = await axios.post(`${url}/api/v1/client/signup`, FormData)
+            const res = await axios.post(`/api/v1/client/signup`, FormData)
             const data = res.data
             setFormData({first_name: '',last_name: '',contact: '',email: '',password: '',})
             navigate('/login')

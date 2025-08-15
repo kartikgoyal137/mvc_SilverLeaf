@@ -11,14 +11,14 @@ export default function AdminPay() {
 
     async function ChangeStatus(m) {
         const status = m.status === 'Pending' ? 'Completed' : 'Pending'
-        const res = await axios.patch(`${url}/api/v1/payments/admin/status`, {"order_id" : m.order_id, "status" : `${status}`},{ headers: { Authorization: `${myToken}` } });
+        const res = await axios.patch(`/api/v1/payments/admin/status`, {"order_id" : m.order_id, "status" : `${status}`},{ headers: { Authorization: `${myToken}` } });
         const changed = res.data || []; 
         fetchPayments()
     }
 
     const fetchPayments = async () => {
         try {
-            const res = await axios.get(`${url}/api/v1/payments/admin/all`, { headers: { Authorization: `${myToken}` } });
+            const res = await axios.get(`/api/v1/payments/admin/all`, { headers: { Authorization: `${myToken}` } });
             const payments = res.data || []; 
 
             setPayments(payments);
