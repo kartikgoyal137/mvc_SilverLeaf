@@ -22,9 +22,15 @@ COPY mvc_backend ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/main.go
 
+FROM golang:1.24-alpine AS migrate-builder
+RUN apk --no-cache add git
+RUN go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
 FROM alpine:latest
 
 WORKDIR /app
+
+RUN apk --no-cache add mysql-client
 
 RUN mkdir -p /app/static
 
@@ -32,8 +38,18 @@ COPY --from=backend-builder /server .
 
 COPY --from=frontend-builder /app/frontend/dist /app/static
 
+COPY --from=migrate-builder /go/bin/migrate /migrate
+
+COPY ./mvc_backend/database/migrations /migrations
+
+COPY ./entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
 COPY mvc_backend/.env.sample ./.env
 
 EXPOSE 8080
+
+ENTRYPOINT ["/migrate.sh"]
 
 CMD ["./server"]

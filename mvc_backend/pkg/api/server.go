@@ -48,7 +48,7 @@ func (s *APIServer) Run() error {
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/app/static")))
 
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:5173", "http://localhost:8080"}, 
+		AllowedOrigins: []string{"http://localhost:8080"}, 
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
 		AllowedHeaders: []string{"*"},
 	})
