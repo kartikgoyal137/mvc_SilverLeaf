@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS `users`;
+DROP DATABASE IF EXISTS `silver_leaf`;

@@ -1,0 +1,1 @@
+DELETE FROM `categories` WHERE `category_id` IN (1, 2, 3, 6, 9, 12, 13);
