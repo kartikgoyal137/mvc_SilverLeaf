@@ -7,6 +7,7 @@ import (
 	"github.com/kartikgoyal137/MVC/pkg/models"
 	auth "github.com/kartikgoyal137/MVC/pkg/middleware"
 	"log"
+	"os"
 	"net/http"
 	"github.com/rs/cors"
 )
@@ -45,7 +46,14 @@ func (s *APIServer) Run() error {
 	paymentHandler := controller.NewPaymentHandler(models.NewPaymentDB(s.db), userStore)
 	s.RegisterPaymentRoutes(subrouter, paymentHandler)
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/app/static")))
+	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		staticFile := "/app/static" + r.URL.Path
+		if _, err := os.Stat(staticFile); os.IsNotExist(err) {
+			http.ServeFile(w, r, "/app/static/index.html")
+			return
+		}
+		http.ServeFile(w, r, staticFile)
+	})
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:8080"}, 
