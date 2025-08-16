@@ -37,14 +37,14 @@ func (h *UserHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := auth.CreateJWT(u.UserID)
+	token, err := auth.CreateJWT(u.UserID, u.Role)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 	userID := strconv.Itoa(u.UserID)
 
-	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token, "user_id" : userID, "role" : u.Role, "name" : u.FirstName})
+	utils.UnMarshal(w, http.StatusOK, map[string]string{"token": token, "user_id" : userID, "name" : u.FirstName})
 }
 
 func (h *UserHandler) HandleSignup(w http.ResponseWriter, r *http.Request) {

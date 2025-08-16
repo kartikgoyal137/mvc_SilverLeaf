@@ -46,20 +46,10 @@ export default function  Menu() {
     }, [])
 
     useEffect(() => {
-        const items = document.querySelectorAll('.menu-item')
-        if(itemV===0) {
-            items.forEach(item => {
-                item.style.visibility = "hidden"; 
-                })
+        const btn = document.querySelector('.start')
+        if(itemV===1) {
+            btn.style.visibility = "hidden"
         }
-        else {
-            const btn = document.querySelector('.start')
-        btn.style.visibility = "hidden"
-            items.forEach(item => {
-                item.style.visibility = "visible"; 
-                })
-        }
-            
     }, [itemV])
 
     

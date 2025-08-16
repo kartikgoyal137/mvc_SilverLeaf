@@ -16,6 +16,7 @@ import (
 type contextKey string
 
 const UserKey contextKey = "userID"
+const RoleKey contextKey = "role"
 
 func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -43,20 +44,22 @@ func JWTauth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFu
 
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, UserKey, u.UserID)
+		ctx = context.WithValue(ctx, RoleKey, u.Role)
 		r = r.WithContext(ctx)
 
 		handlerFunc(w, r)
 	}
 }
 
-func CreateJWT(userID int) (string, error) {
+func CreateJWT(userID int, role string) (string, error) {
 	var secretKey = os.Getenv("TOKENKEY")
 	if secretKey == "" {
 		return "", fmt.Errorf("TOKENKEY environment variable not set")
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"userID":    userID,
+			"userID": userID,
+			"role": role,
 			"expiresAt": time.Now().Add(time.Hour * 24).Unix(),
 		})
 
