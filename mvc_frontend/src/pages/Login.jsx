@@ -4,7 +4,7 @@ import Navbar2 from '../components/Navbar2'
 import HeroImg from '../assets/cafe.jpg'
 import './css/login.css'
 import axios from "axios"
-import { useAuth } from '../context/AuthContext';
+import { getUser } from '../context/AuthContext'
 
 export default function Signup() {
     const navigate = useNavigate()
@@ -20,7 +20,6 @@ export default function Signup() {
         setFormData({...FormData, [e.target.name]: e.target.value})
     }
 
-    const {user, login} = useAuth()
 
     const handleSubmit = async (e) => {
         try {
@@ -29,12 +28,13 @@ export default function Signup() {
             const res = await axios.post(`/api/v1/client/login`, FormData)
             const data = res.data 
             localStorage.setItem('token', JSON.stringify(data.token)) 
+            localStorage.setItem('user_id', JSON.stringify(data.user_id)) 
             setFormData({email: '', password: ''})
-            
 
-            login(data.name, data.role, data.user_id)
+            const user = getUser();
+            
                 
-            switch (data.role) {
+            switch (user.role) {
                 case 'customer':
                     navigate('/home')
                     break;

@@ -4,7 +4,6 @@ import HeroImg from '../assets/cafe.jpg'
 import './css/checkout.css'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
 export default function Checkout() {
     
@@ -19,11 +18,10 @@ export default function Checkout() {
         description : "",
         tip : ""
     });
-    const {user} = useAuth()
 
     const orderID = JSON.parse(localStorage.getItem('order_id'))
     const myToken = JSON.parse(localStorage.getItem('token'))
-    const userID = user.id
+    const userID = JSON.parse(localStorage.getItem('user_id'))
     
 
     const calculateSubtotal = async () => {
