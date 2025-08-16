@@ -1,4 +1,4 @@
-CREATE TABLE `categories` (
+CREATE TABLE IF NOT EXISTS `categories`  (
   `category_id` int PRIMARY KEY NOT NULL,
   `category_name` varchar(20) DEFAULT null,
   `description` text,

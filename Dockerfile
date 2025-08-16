@@ -42,9 +42,9 @@ COPY --from=migrate-builder /go/bin/migrate /migrate
 
 COPY ./mvc_backend/database/migrations /migrations
 
-COPY ./entrypoint.sh /entrypoint.sh
+COPY ./migrate.sh /migrate.sh
 
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /migrate.sh
 
 COPY mvc_backend/.env.sample ./.env
 

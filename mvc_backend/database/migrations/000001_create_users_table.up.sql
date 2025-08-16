@@ -1,4 +1,7 @@
-CREATE TABLE `users` (
+CREATE DATABASE IF NOT EXISTS `silver_leaf`;
+USE `silver_leaf`;
+
+CREATE TABLE IF NOT EXISTS `users`  (
   `user_id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `first_name` varchar(30) DEFAULT null,
   `last_name` varchar(30) DEFAULT null,

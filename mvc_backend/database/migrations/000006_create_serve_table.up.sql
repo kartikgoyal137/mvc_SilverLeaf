@@ -1,4 +1,4 @@
-CREATE TABLE `serve` (
+CREATE TABLE IF NOT EXISTS `serve` (
   `order_id` int NOT NULL AUTO_INCREMENT,
   `product_id` int NOT NULL,
   `quantity` int DEFAULT '0',

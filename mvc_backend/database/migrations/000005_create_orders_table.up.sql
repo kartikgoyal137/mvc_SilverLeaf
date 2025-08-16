@@ -1,4 +1,4 @@
-CREATE TABLE `orders` (
+CREATE TABLE IF NOT EXISTS `orders` (
   `order_id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `user_id` int DEFAULT null,
   `status` ENUM ('Yet to start', 'Cooking', 'Completed') DEFAULT null,

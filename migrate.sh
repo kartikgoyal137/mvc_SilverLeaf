@@ -4,7 +4,7 @@ set -e
 DB_URL="mysql://${DBUSER}:${DBPASS}@tcp(${DBHOST}:3306)/${DBNAME}?parseTime=true"
 
 echo "Waiting for database to be ready..."
-sleep 5
+sleep 2
 
 echo "Running database migrations..."
 
