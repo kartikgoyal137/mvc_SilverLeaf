@@ -45,7 +45,6 @@ export default function AdminOrder() {
                 <div className="btn btn-warning mx-2 col-1">OrderID</div>
                 <div className="btn btn-warning mx-2 col-2">Dish / Quantity</div>
                 <div className="btn btn-warning mx-2 col-2">Timestamp</div>
-                <div className="btn btn-warning mx-2 col-2">Instructions</div>
                 <div className="btn btn-warning mx-2 col-1">Table no</div>
                 <div className="btn btn-warning mx-2 col-3">Status</div>
             </div>
@@ -60,7 +59,6 @@ export default function AdminOrder() {
                 )
                 }</div>
                 <div className="mx-2 col-2"><FormattedDate isoDateString={m.created_at}/></div>
-                <div className="mx-2 col-2">{m.instructions}</div>
                 <div className="mx-2 col-1">{m.table_no}</div>
                 <div className="btn btn-success mx-2 col-2">{m.status}</div>
                 </div>

@@ -30,7 +30,6 @@ export default function Checkout() {
         }
         const res = await axios.get(`/api/v1/payments/total/${orderID}`, {headers: {Authorization: `${myToken}`}})
         const data = res.data || 0
-        console.log(data)
         const ans =  parseInt(data, 10)*1.08
         return ans.toFixed(2)
     };
@@ -72,7 +71,6 @@ export default function Checkout() {
                 data=[]
             }
             setCartItems(data)
-            console.log(data)
         }
         fetch()
     }, [])
