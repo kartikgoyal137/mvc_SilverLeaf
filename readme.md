@@ -47,7 +47,9 @@ Follow these instructions to get the project up and running on your local machin
     DBPASS=your_mysql_password
     TOKENKEY=your_super_secret_jwt_key
     DBNAME=silver_leaf
+
     DBHOST=host.docker.internal # if using docker-desktop
+    DBHOST=localhost # use host-networking otherwise
     ```
 
 3.  **Build and Run with Docker**
