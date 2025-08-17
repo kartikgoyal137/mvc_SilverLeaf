@@ -3,9 +3,11 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 var DB *sql.DB
@@ -34,6 +36,10 @@ func InitDatabase() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	DB.SetMaxOpenConns(200)
+	DB.SetMaxIdleConns(100)
+	DB.SetConnMaxLifetime(10 * time.Minute)
 
 	pingErr := DB.Ping()
 	if pingErr != nil {
