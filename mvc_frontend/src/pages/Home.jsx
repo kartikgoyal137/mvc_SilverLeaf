@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar"
 import HeroImg from '../assets/cafe.jpg'
 import Chef from '../assets/chef.png'
 import Table from '../assets/table.png'
-import './css/home.css'
 import { useNavigate } from "react-router-dom"
 import Review from '../components/ReviewCard'
 
@@ -28,14 +27,14 @@ export default function Home() {
 
             <div className="container py-5">
                 <div className="row align-items-center">
-                    <div className="col-lg-7">
+                    <div className="col-lg-8">
                         <div className="story">
                             <p className="fs-2 cormorant mb-0">Our Story</p>
                             <h3 className="cormorant display-3 mb-4 mt-0 fw-semibold">The Heart of Silver Leaf</h3>
                             <p className="fs-4">Founded in 2010, Silver Leaf began as a humble dream to bring authentic, high-quality cuisine to the forefront of our city's dining scene. Our philosophy is simple: use the freshest, locally-sourced ingredients to create unforgettable dishes that tell a story. Over the years, we've grown into a beloved establishment, but our core values of quality, community, and culinary passion remain unchanged.</p>
                         </div>
                     </div>
-                    <div className="col-lg-5 mt-4 mt-lg-0">
+                    <div className="col-lg-4 mt-4 mt-lg-0">
                         <img src={Chef} alt="Chef in the kitchen" className="img-fluid rounded-5 mb-3" />
                         <img src={Table} alt="Restaurant dining table" className="img-fluid rounded-5" />
                     </div>
@@ -72,22 +71,6 @@ export default function Home() {
                             </div>
                         </div>
                         
-                    </div>
-                </div>
-            </div>
-
-            {/* REVIEWS SECTION - Restructured with Bootstrap Grid */}
-            <div className="container my-5">
-                <div className="row text-center">
-                    {/* Each review gets a column that stacks on mobile */}
-                    <div className="col-12 col-md-4 mb-4 mb-md-0">
-                        <Review />
-                    </div>
-                    <div className="col-12 col-md-4 mb-4 mb-md-0">
-                        <Review />
-                    </div>
-                    <div className="col-12 col-md-4">
-                        <Review />
                     </div>
                 </div>
             </div>

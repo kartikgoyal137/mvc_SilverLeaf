@@ -55,20 +55,21 @@ export default function AdminUser() {
         <NavbarAdmin/>
         <div className="container">
             <div className="row my-5">
-                <div className="btn btn-warning mx-2 col-1">UserID</div>
-                <div className="btn btn-warning mx-2 col-2">Name</div>
-                <div className="btn btn-warning mx-2 col-2">Contact</div>
-                <div className="btn btn-warning mx-2 col-3">Email</div>
-                <div className="btn btn-warning mx-2 col-2">Role</div>
+                <div className="btn btn-warning mx-1 col-1">UserID</div>
+                <div className="btn btn-warning mx-1 col-2">Name</div>
+                <div className="btn btn-warning mx-1 col-2">Contact</div>
+                <div className="btn btn-warning mx-1 col-3">Email</div>
+                <div className="btn btn-warning mx-1 col-2">Role</div>
             </div>
             {users.map(m => {
                 return (
-                <div className="mx-2 row my-3 ">
-                    <div className="mx-2 col-1">{m.user_id}</div>
-                    <div className="mx-2 col-2">{m.first_name} {m.last_name}</div>
-                    <div className="mx-2 col-2">{m.contact}</div>
-                    <div className="mx-2 col-3">{m.email}</div>
-                    <div onClick={() => {ChangeRole(m)}} className="btn btn-success mx-2 col-2">{m.role}</div>
+                <div className="mx-1 row my-3 border-2 ">
+                    <div className="mx-1 col-1">{m.user_id}</div>
+                    <div className="mx-1 col-2">{m.first_name} {m.last_name}</div>
+                    <div className="mx-1 col-2">{m.contact}</div>
+                    <div className="mx-1 col-3">{m.email}</div>
+                    <div className="btn btn-primary col-2">{m.role}</div>
+                    <button onClick={() => {ChangeRole(m)}} className="btn btn-success mx-1 col-1">UP</button>
                 </div>
                 )
             })}

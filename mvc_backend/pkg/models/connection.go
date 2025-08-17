@@ -37,7 +37,7 @@ func InitDatabase() (*sql.DB, error) {
 		return nil, err
 	}
 
-	DB.SetMaxOpenConns(200)
+	DB.SetMaxOpenConns(150)
 	DB.SetMaxIdleConns(100)
 	DB.SetConnMaxLifetime(10 * time.Minute)
 

@@ -2,7 +2,6 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Navbar2 from '../components/Navbar2'
 import HeroImg from '../assets/cafe.jpg'
-import './css/login.css'
 import axios from "axios"
 import { getUser } from '../context/AuthContext'
 

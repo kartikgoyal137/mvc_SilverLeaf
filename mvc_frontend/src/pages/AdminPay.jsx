@@ -39,24 +39,26 @@ export default function AdminPay() {
         <NavbarAdmin/>
         <div className="container">
             <div className="row my-5">
-                <div className="btn btn-warning mx-2 col-1">PaymentID</div>
-                <div className="btn btn-warning mx-2 col-1">UserID</div>
-                <div className="btn btn-warning mx-2 col-1">OrderID</div>
-                <div className="btn btn-warning mx-2 col-1">Price</div>
-                <div className="btn btn-warning mx-2 col-2">Timestamp</div>
-                <div className="btn btn-warning mx-2 col-1">Tip</div>
-                <div className="btn btn-warning mx-2 col-2">Status</div>
+                <div className="btn btn-warning mx-1 col-1">PaymentID</div>
+                <div className="btn btn-warning mx-1 col-1">UserID</div>
+                <div className="btn btn-warning mx-1 col-1">OrderID</div>
+                <div className="btn btn-warning mx-1 col-1">Price</div>
+                <div className="btn btn-warning mx-1 col-2">Timestamp</div>
+                <div className="btn btn-warning mx-1 col-1">Tip</div>
+                <div className="btn btn-warning mx-1 col-2">Status</div>
             </div>
             {payments.map(m => {
                 return (
-                <div className="mx-2 row my-3 ">
-                    <div className="mx-2 col-1">{m.transaction_id}</div>
-                    <div className="mx-2 col-1">{m.user_id}</div>
-                    <div className="mx-2 col-1">{m.order_id}</div>
-                    <div className="mx-2 col-1">{m.food_total}</div>
-                    <div className="mx-2 col-2">{m.created_at}</div>
-                    <div className="mx-2 col-1">{m.tip}</div>
-                    <div onClick={() => {ChangeStatus(m)}} className="btn btn-success mx-2 col-2">{m.status}</div>
+                <div className="mx-1 row my-3 border-2">
+                    <div className="mx-1 col-1">{m.transaction_id}</div>
+                    <div className="mx-1 col-1">{m.user_id}</div>
+                    <div className="mx-1 col-1">{m.order_id}</div>
+                    <div className="mx-1 col-1">{m.food_total}</div>
+                    <div className="mx-1 col-2">{m.created_at}</div>
+                    <div className="mx-1 col-1">{m.tip}</div>
+                    <div className="btn btn-primary col-2">{m.status}
+                    </div>
+                    <button onClick={() => {ChangeStatus(m)}} className="btn btn-success mx-1 col-1">UP</button>
                 </div>
                 )
             })}

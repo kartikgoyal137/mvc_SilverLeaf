@@ -62,27 +62,28 @@ export default function Chef() {
         <NavbarChef/>
         <div className="container">
             <div className="row mt-5">
-                <div className="btn btn-warning mx-2 col-1">OrderID</div>
-                <div className="btn btn-warning mx-2 col-2">Dish / Quantity</div>
-                <div className="btn btn-warning mx-2 col-2">Timestamp</div>
-                <div className="btn btn-warning mx-2 col-2">Instructions</div>
-                <div className="btn btn-warning mx-2 col-1">Table no</div>
-                <div className="btn btn-warning mx-2 col-2">Status</div>
+                <div className="btn btn-warning mx-1 col-1">OrderID</div>
+                <div className="btn btn-warning mx-1 col-2">Dish / Quantity</div>
+                <div className="btn btn-warning mx-1 col-2">Timestamp</div>
+                <div className="btn btn-warning mx-1 col-2">Instructions</div>
+                <div className="btn btn-warning mx-1 col-1">Table no</div>
+                <div className="btn btn-warning mx-1 col-2">Status</div>
             </div>
             {orders.map(m => {
                 return (
-                    <div className="mx-2 row my-3 ">
-                <div className="mx-2 col-1">{m.order_id}</div>
-                <div className="mx-2 col-2">{m.products.map(t => 
+                    <div className="mx-1 row my-3 border-2">
+                <div className="mx-1 col-1">{m.order_id}</div>
+                <div className="mx-1 col-2">{m.products.map(t => 
                         <>
                         <p className="m-0 p-0">{t.name} / {t.quantity}</p>
                         </>
                 )
                 }</div>
-                <div className="mx-2 col-2">{m.created_at}</div>
-                <div className="mx-2 col-2">{m.instructions}</div>
-                <div className="mx-2 col-1">{m.table_no}</div>
-                <div onClick={() => {ChangeStatus(m)}} className="btn btn-success mx-2 col-2">{m.status}</div>
+                <div className="mx-1 col-2">{m.created_at}</div>
+                <div className="mx-1 col-2">{m.instructions}</div>
+                <div className="mx-1 col-1">{m.table_no}</div>
+                <div className="btn btn-primary col-2 text-center">{m.status}</div>
+                <button onClick={() => {ChangeStatus(m)}} className="btn btn-success mx-1 col-1">UP</button>
                 </div>
                 )
             })}

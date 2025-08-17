@@ -81,7 +81,7 @@ func (s *APIServer) RegisterUserRoutes(router *mux.Router, h *controller.UserHan
 	adminHandler2 := auth.AdminAuth(h.ChangeUserStatus, h.Store)
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.Store)
 
-	router.HandleFunc("/client/admin/all", CacheMiddleware(jwtAdminHandler1)).Methods("GET")
+	router.HandleFunc("/client/admin/all", jwtAdminHandler1).Methods("GET")
 	router.HandleFunc("/client/admin/status/{role}/{user}", jwtAdminHandler2).Methods("PATCH")
 	router.HandleFunc("/client/login", h.HandleLogin).Methods("POST")
 	router.HandleFunc("/client/signup", h.HandleSignup).Methods("POST")
@@ -119,7 +119,7 @@ func (s *APIServer) RegisterOrderRoutes(router *mux.Router, h *controller.OrderH
 	jwtAdminHandler3 := auth.JWTauth(AdminHandler3, h.UserStore)
 
 	router.HandleFunc("/orders/place", auth.JWTauth(h.PlaceOrder, h.UserStore)).Methods("POST")
-	router.HandleFunc("/orders/user", CacheMiddleware(auth.JWTauth(h.HandleMyOrders, h.UserStore))).Methods("GET")
+	router.HandleFunc("/orders/user", auth.JWTauth(h.HandleMyOrders, h.UserStore)).Methods("GET")
 	router.HandleFunc("/orders/start", auth.JWTauth(h.CreateOrderHandler, h.UserStore)).Methods("POST")
 	router.HandleFunc("/orders/chef/active", jwtChefHandler1).Methods("GET")
 	router.HandleFunc("/orders/chef/status", jwtChefHandler2).Methods("POST")
@@ -133,7 +133,7 @@ func (s *APIServer) RegisterPaymentRoutes(router *mux.Router, h *controller.Paym
 	adminHandler2 := auth.AdminAuth(h.ChangePaymentStatus, h.UserStore)
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.UserStore)
 
-	router.HandleFunc("/payments/admin/all", CacheMiddleware(jwtAdminHandler1)).Methods("GET")
+	router.HandleFunc("/payments/admin/all", jwtAdminHandler1).Methods("GET")
 	router.HandleFunc("/payments/admin/status", jwtAdminHandler2).Methods("PATCH")
 	router.HandleFunc("/payments/user", auth.JWTauth(h.HandleGetPayByUser, h.UserStore)).Methods("GET")
 	router.HandleFunc("/payments/total/{order_id}", auth.JWTauth(h.HandleCalculateTotal, h.UserStore)).Methods("GET")

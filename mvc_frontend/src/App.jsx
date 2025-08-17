@@ -17,11 +17,13 @@ function App() {
   return (
     <>
     <Routes>
-      <Route path='/home' element={<Home/>} />
-      <Route path='/menu' element={<Menu/>} />
       <Route path='/' element={<Login/>} />
       <Route path='/login' element={<Login/>} />
       <Route path='/signup' element={<Signup/>} />
+
+      <Route path='/home' element={<ProtectedRoute allowedRoles={['customer', 'chef', 'administrator']}><Home/></ProtectedRoute>}/>
+      <Route path='/menu' element={<ProtectedRoute allowedRoles={['customer', 'chef', 'administrator']}><Menu/></ProtectedRoute>}/>
+
 
       <Route path='/checkout' element={<ProtectedRoute allowedRoles={['customer', 'chef', 'administrator']}><Checkout/></ProtectedRoute>}/>
       <Route path='/myorders' element={<ProtectedRoute allowedRoles={['customer', 'chef', 'administrator']}><MyOrders/></ProtectedRoute>}/>

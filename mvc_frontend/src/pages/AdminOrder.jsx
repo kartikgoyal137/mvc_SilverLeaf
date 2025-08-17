@@ -50,7 +50,7 @@ export default function AdminOrder() {
             </div>
             {orders.map(m => {
                 return (
-                    <div className="mx-2 row my-3 ">
+                    <div className="mx-2 row my-3 border-2">
                 <div className="mx-2 col-1">{m.order_id}</div>
                 <div className="mx-2 col-2">{m.products.map(t => 
                         <>

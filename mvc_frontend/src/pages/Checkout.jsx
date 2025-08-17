@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar'
 import HeroImg from '../assets/cafe.jpg'
-import './css/checkout.css'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 

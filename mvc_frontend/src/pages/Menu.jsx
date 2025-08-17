@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import Navbar from "../components/Navbar"
 import HeroImg from '../assets/cafe.jpg'
-import './css/menu.css'
 import Card from '../components/ItemCard'
 
 export default function  Menu() {
