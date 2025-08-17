@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import NavbarAdmin from "../components/NavbarAdmin";
 import axios from "axios";
+import FormattedDate from "../components/FormatDate";
 
 export default function AdminPay() {
     const url = import.meta.env.VITE_URL
@@ -45,16 +46,16 @@ export default function AdminPay() {
                 <div className="btn btn-warning mx-1 col-1">Price</div>
                 <div className="btn btn-warning mx-1 col-2">Timestamp</div>
                 <div className="btn btn-warning mx-1 col-1">Tip</div>
-                <div className="btn btn-warning mx-1 col-2">Status</div>
+                <div className="btn btn-warning mx-1 col-3">Status</div>
             </div>
             {payments.map(m => {
                 return (
-                <div className="mx-1 row my-3 border-2">
+                <div className="mx-1 row my-3 py-1 d-flex align-items-center border-bottom border-2">
                     <div className="mx-1 col-1">{m.transaction_id}</div>
                     <div className="mx-1 col-1">{m.user_id}</div>
                     <div className="mx-1 col-1">{m.order_id}</div>
                     <div className="mx-1 col-1">{m.food_total}</div>
-                    <div className="mx-1 col-2">{m.created_at}</div>
+                    <div className="mx-1 col-2"><FormattedDate isoDateString={m.created_at}/></div>
                     <div className="mx-1 col-1">{m.tip}</div>
                     <div className="btn btn-primary col-2">{m.status}
                     </div>

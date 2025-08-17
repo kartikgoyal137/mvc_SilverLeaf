@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import NavbarChef from "../components/NavbarChef";
 import axios from "axios";
+import FormattedDate from "../components/FormatDate";
 
 export default function Chef() {
     const url = import.meta.env.VITE_URL
@@ -67,11 +68,11 @@ export default function Chef() {
                 <div className="btn btn-warning mx-1 col-2">Timestamp</div>
                 <div className="btn btn-warning mx-1 col-2">Instructions</div>
                 <div className="btn btn-warning mx-1 col-1">Table no</div>
-                <div className="btn btn-warning mx-1 col-2">Status</div>
+                <div className="btn btn-warning mx-1 col-3">Status</div>
             </div>
             {orders.map(m => {
                 return (
-                    <div className="mx-1 row my-3 border-2">
+                    <div className="mx-1 d-flex align-items-center row my-3 py-1 border-bottom border-2">
                 <div className="mx-1 col-1">{m.order_id}</div>
                 <div className="mx-1 col-2">{m.products.map(t => 
                         <>
@@ -79,7 +80,7 @@ export default function Chef() {
                         </>
                 )
                 }</div>
-                <div className="mx-1 col-2">{m.created_at}</div>
+                <div className="mx-1 col-2"><FormattedDate isoDateString={m.created_at}/></div>
                 <div className="mx-1 col-2">{m.instructions}</div>
                 <div className="mx-1 col-1">{m.table_no}</div>
                 <div className="btn btn-primary col-2 text-center">{m.status}</div>

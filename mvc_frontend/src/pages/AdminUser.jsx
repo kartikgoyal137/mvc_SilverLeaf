@@ -59,11 +59,11 @@ export default function AdminUser() {
                 <div className="btn btn-warning mx-1 col-2">Name</div>
                 <div className="btn btn-warning mx-1 col-2">Contact</div>
                 <div className="btn btn-warning mx-1 col-3">Email</div>
-                <div className="btn btn-warning mx-1 col-2">Role</div>
+                <div className="btn btn-warning mx-1 col-3">Role</div>
             </div>
             {users.map(m => {
                 return (
-                <div className="mx-1 row my-3 border-2 ">
+                <div className="mx-1 row my-3 d-flex align-items-center py-1 border-bottom border-2 ">
                     <div className="mx-1 col-1">{m.user_id}</div>
                     <div className="mx-1 col-2">{m.first_name} {m.last_name}</div>
                     <div className="mx-1 col-2">{m.contact}</div>

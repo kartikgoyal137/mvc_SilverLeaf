@@ -48,7 +48,7 @@ export default function Home() {
                     <p className="text-center fs-5 mt-3 w-100 w-lg-50 mb-5">From our kitchen to your table, these are the creations that define us. Handpicked by our chef, celebrated by our guests.</p>
                 </div>
                 <div className="container">
-                    <div className="row justify-content-center text-center">
+                    <div className="row justify-content-center d-flex text-center">
                         <div className="col-12 col-md-6 col-lg-4 mb-4">
                             <div className="food">
                                 <img alt="Seared Scallops" className="img-fluid rounded-5 mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK_fnzBrvq62OosPBTLExYT2_pQRZEMsiaaqKQHusFd_GqLsXIPHF6mVEGdr5AiWUQSvBdL1d_oBK1rb3Xh-zVkgnDjsmI7Zy7F6K1pPJ81vKFkZg04hv35CjgE_-6cZvhyOYHQ8X1pfXxvBu15OAZ14XwFr7p-VeXHblq2BocWLBJi_-UwXQq8Q24usqNLBT9-jkfiOS2o7s1g_iyqTq0Ow3_hMHNy-cHXOpXzXw6wKz7e82L2pCN2AgO1wAwDj-uOcW0aeFoQ9g" />

@@ -6,11 +6,12 @@
       --background-color: #121212;
       --text-primary: #F5F5F5;
       --text-secondary: #a3a3a3;
+      background-color: var(--background-color);
     }
 
 body {
       font-family: 'Be Vietnam Pro', sans-serif;
-      background-color: var(--background-color);
+      
     }
 .cormorant {
       font-family: 'Cormorant Garamond', serif;
@@ -45,7 +46,7 @@ body {
 
 .story {
   display: inline-block;
-  width: 50%;
+  width: 80%;
 }
 
 .section-2 {
