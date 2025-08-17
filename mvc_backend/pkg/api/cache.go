@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var c = cache.New(1*time.Hour, 20*time.Minute)
+var c = cache.New(3*time.Hour, 10*time.Minute)
 
 type responseWriter struct {
     http.ResponseWriter
