@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kartikgoyal137/MVC/pkg/api"
 	"github.com/kartikgoyal137/MVC/pkg/models"
+	"github.com/kartikgoyal137/MVC/pkg/workers"
 	"log"
 	"os"
 	"os/signal"
@@ -19,6 +20,8 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	workers.StartCacheWorker(db)
 
 	server := api.NewAPIServer(":8080", db)
 

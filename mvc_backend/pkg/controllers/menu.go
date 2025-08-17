@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-
+	"github.com/kartikgoyal137/MVC/pkg/models"
 	"github.com/gorilla/mux"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 	"github.com/kartikgoyal137/MVC/pkg/utils"
@@ -20,6 +20,13 @@ func NewMenuHandler(store types.MenuStore, userStore types.UserStore) *MenuHandl
 }
 
 func (h *MenuHandler) AllCategories(w http.ResponseWriter, r *http.Request) {
+	if models.CategoryCacheString != "" {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(models.CategoryCacheString))
+		return
+	}
+
 	cat, err := h.store.ListOfCategory()
 
 	if err != nil {
@@ -36,6 +43,13 @@ func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
 	productID, err := strconv.Atoi(id)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("failed to convert productID into integer"))
+		return
+	}
+
+	if menuJSON, found := models.MenuCache[productID]; found {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(menuJSON))
 		return
 	}
 
