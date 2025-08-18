@@ -55,5 +55,6 @@
 			fmt.Println("Closing database connection...")
 			return DB.Close()
 		}
+		
 		return nil
 	}

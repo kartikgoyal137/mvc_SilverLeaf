@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Navbar2 from '../components/Navbar2'
+import Navbar2 from '../components/NavbarLogin'
 import HeroImg from '../assets/cafe.jpg'
 import axios from "axios"
 import { getUser } from '../utils/Auth'

@@ -21,7 +21,7 @@ type MenuItem struct {
 type Order struct {
 	OrderID      int       `json:"order_id"`
 	UserID       int      `json:"user_id"`
-	Status       string    `json:"status"` // "Yet to start", "Cooking", "Completed"
+	Status       string    `json:"status"`
 	CreatedAt    time.Time `json:"created_at"`
 	Instructions *string    `json:"instructions"`
 	TableNo      *int      `json:"table_no"`
@@ -55,7 +55,7 @@ type Payment struct {
 	FoodTotal     float64   `json:"food_total"`
 	CreatedAt     time.Time `json:"created_at"`
 	Tip           *int      `json:"tip"`
-	Status        string    `json:"status"` // "Pending" or "Completed"
+	Status        string    `json:"status"`
 }
 
 type MakePayment struct {
@@ -72,7 +72,7 @@ type User struct {
 	Contact      string `json:"contact"`
 	Email        string `json:"email"`
 	PasswordHash string `json:"password_hash"`
-	Role         string `json:"role"` // "administrator", "customer", or "chef"
+	Role         string `json:"role"`
 }
 
 type RegisterUser struct {

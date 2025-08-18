@@ -67,6 +67,7 @@ func (s *MenuDB) AddMenuItem(item *types.MenuItem) error {
 	if err2 != nil {
 		return err2
 	}
+
 	return nil
 }
 
@@ -75,6 +76,7 @@ func (s *MenuDB) RemoveMenuItem(productID int) error {
 	if err != nil {
 		return err
 	}
+	
 	return nil
 }
 
