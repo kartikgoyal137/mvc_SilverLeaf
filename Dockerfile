@@ -46,7 +46,7 @@ COPY ./migrate.sh /migrate.sh
 
 RUN chmod +x /migrate.sh
 
-COPY mvc_backend/.env.sample ./.env
+COPY ./.env.sample ./.env
 
 EXPOSE 8080
 
