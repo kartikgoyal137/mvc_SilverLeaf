@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import Navbar2 from '../components/Navbar2'
 import HeroImg from '../assets/cafe.jpg'
 import axios from "axios"
-import { getUser } from '../context/AuthContext'
+import { getUser } from '../utils/Auth'
 
 export default function Signup() {
     const navigate = useNavigate()
