@@ -1,7 +1,7 @@
 # Performance Benchmark
 ## 1000 concurrent users ; 100,000 requests
 
-These results were generated using Apache Bench after implementing the proactive, single-query caching strategy.
+These results are for GET request for fetching the restaurant MENU including product image, description etc.
 
 ```
 This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
