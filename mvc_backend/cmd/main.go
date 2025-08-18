@@ -21,6 +21,7 @@ func main() {
 	}
 	defer db.Close()
 
+	workers.InitialCacheLoad(db)
 	workers.StartCacheWorker(db)
 
 	server := api.NewAPIServer(":8080", db)
