@@ -58,3 +58,10 @@ Percentage of the requests served within a certain time (ms)
   99%     73
  100%     78 (longest request)
 ```
+
+```
+ChefJWT : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTU2MjMxMTEsInJvbGUiOiJjaGVmIiwidXNlcklEIjoyfQ.Q3-G8kX_Z515VtzC5zkRWLHEKr5-lGojY9Lz4V6b_J4
+AdminJWT : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTU2MjMxOTMsInJvbGUiOiJhZG1pbmlzdHJhdG9yIiwidXNlcklEIjoxfQ.7W5JIs-x58mMNMf6vlLchMl3Ym6j6MLgUjlI7sw1cvE
+```
+
+# Command for POST request test
