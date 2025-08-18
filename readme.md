@@ -35,30 +35,29 @@ Follow these instructions to get the project up and running on your local machin
     ```
 
 2.  **Configure Environment Variables**
-    The project uses a `.env` file to manage sensitive information like database credentials and JWT secrets. Create a `.env` file in the `mvc_backend` directory by copying the sample file.
+    The project uses a `.env` file to manage sensitive information like database credentials and JWT secrets. 
 
     ```bash
-    cp mvc_backend/.env.sample mvc_backend/.env
+    cp .env.sample .env
     ```
 
-    Now, open `mvc_backend/.env` and fill in the required values:
+    Now, open `.env` and fill in the required values:
     ```env
-    DBUSER=your_mysql_user
-    DBPASS=your_mysql_password
-    TOKENKEY=your_super_secret_jwt_key
+    DBUSER=
+    DBPASS=
+    DBROOTPASS=
+    TOKENKEY=
     DBNAME=silver_leaf
-
-    DBHOST=host.docker.internal # if using docker-desktop
-    DBHOST=localhost # use host-networking otherwise
+    DBHOST=db
     ```
 
 3.  **Build and Run with Docker**
     The included `Makefile` simplifies the Docker process. In the root directory of the project, run:
     ```bash
     make build
-    make run
+    make up
     ```
-    This command will build the multi-stage Docker image, which compiles the Go backend, builds the React frontend, sets up the database, runs migrations, and starts the application.
+    This command will build the Docker image, which compiles the Go backend, builds the React frontend, sets up the database, runs migrations, and starts the application.
 
     Your application should now be running!
 
