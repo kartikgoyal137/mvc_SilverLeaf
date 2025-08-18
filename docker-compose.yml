@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: silverleaf-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      DBUSER: ${DBUSER}
+      DBPASS: ${DBPASS}
+      DBNAME: ${DBNAME}
+      TOKENKEY: ${TOKENKEY}
+      DBHOST: db
+    depends_on:
+      - db
+    networks:
+      - silverleaf-network
+
+  db:
+    image: mysql:8.0
+    container_name: silverleaf-db
+    restart: always
+  
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: ${DBNAME}
+      MYSQL_USER: ${DBUSER}
+      MYSQL_PASSWORD: ${DBPASS}
+      MYSQL_ROOT_PASSWORD: ${DBROOTPASS}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - silverleaf-network
+
+volumes:
+  mysql_data:
+
+networks:
+  silverleaf-network:
+    driver: bridge

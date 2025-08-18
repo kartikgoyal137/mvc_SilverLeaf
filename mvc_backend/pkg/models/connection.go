@@ -24,7 +24,6 @@
 		cfg.Passwd = os.Getenv("DBPASS")
 		cfg.Net = "tcp"
 		cfg.DBName = os.Getenv("DBNAME")
-		cfg.Params = map[string]string{"auth_plugin": "mysql_native_password"}
 		cfg.ParseTime = true
 		dbHost := os.Getenv("DBHOST")
 		if dbHost == "" {
