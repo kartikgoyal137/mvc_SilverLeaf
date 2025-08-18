@@ -102,8 +102,8 @@ func (s *APIServer) RegisterMenuRoutes(router *mux.Router, h *controller.MenuHan
 	adminHandler2 := auth.AdminAuth(h.HandleRemoveMenuItem, h.UserStore)
 	jwtAdminHandler2 := auth.JWTauth(adminHandler2, h.UserStore)
 
-	router.HandleFunc("/menu/cat/all", CacheMiddleware(h.AllCategories)).Methods("GET")
-	router.HandleFunc("/menu/cat/{id}", CacheMiddleware(h.MenuByCategory)).Methods("GET")
+	router.HandleFunc("/menu/cat/all", h.AllCategories).Methods("GET")
+	router.HandleFunc("/menu/cat/{id}", h.MenuByCategory).Methods("GET")
 	router.HandleFunc("/menu/add", jwtAdminHandler1).Methods("PATCH")
 	router.HandleFunc("/menu/remove/{product_id}", jwtAdminHandler2).Methods("DELETE")
 }
@@ -123,7 +123,7 @@ func (s *APIServer) RegisterOrderRoutes(router *mux.Router, h *controller.OrderH
 	router.HandleFunc("/orders/start", auth.JWTauth(h.CreateOrderHandler, h.UserStore)).Methods("POST")
 	router.HandleFunc("/orders/chef/active", jwtChefHandler1).Methods("GET")
 	router.HandleFunc("/orders/chef/status", jwtChefHandler2).Methods("POST")
-	router.HandleFunc("/orders/admin/all", CacheMiddleware(jwtAdminHandler3)).Methods("GET")
+	router.HandleFunc("/orders/admin/all", jwtAdminHandler3).Methods("GET")
 }
 
 func (s *APIServer) RegisterPaymentRoutes(router *mux.Router, h *controller.PaymentHandler) {
