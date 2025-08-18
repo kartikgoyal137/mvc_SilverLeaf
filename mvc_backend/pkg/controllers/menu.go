@@ -20,7 +20,12 @@ func NewMenuHandler(store types.MenuStore, userStore types.UserStore) *MenuHandl
 }
 
 func (h *MenuHandler) AllCategories(w http.ResponseWriter, r *http.Request) {
-	if models.CategoryCacheString != "" {
+
+	models.CacheMutex.RLock()
+	cachedData := models.CategoryCacheString
+	models.CacheMutex.RUnlock()
+
+	if cachedData != "" {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(models.CategoryCacheString))
@@ -46,7 +51,11 @@ func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if menuJSON, found := models.MenuCache[productID]; found {
+	models.CacheMutex.RLock()
+	menuJSON, found := models.MenuCache[productID]
+	models.CacheMutex.RUnlock()
+
+	if found {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(menuJSON))

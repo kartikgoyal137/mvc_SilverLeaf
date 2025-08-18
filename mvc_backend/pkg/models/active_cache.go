@@ -2,14 +2,15 @@ package models
 
 import (
 	"database/sql"
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"log"
-
+	"sync"
 	"github.com/kartikgoyal137/MVC/pkg/types"
 )
 
 var CategoryCacheString string
 var MenuCache = make(map[int]string)
+var CacheMutex sync.RWMutex
 
 func ReloadCategoriesCache(db *sql.DB) {
 	rows, err := db.Query("SELECT category_id, category_name, description, image_url FROM categories;")
@@ -35,7 +36,10 @@ func ReloadCategoriesCache(db *sql.DB) {
 		return
 	}
 
+	CacheMutex.Lock()
 	CategoryCacheString = string(jsonData)
+	CacheMutex.Unlock()
+
 	log.Println("All categories reloaded.")
 }
 
@@ -79,6 +83,9 @@ func ReloadMenuCache(db *sql.DB) {
 		tempMenuCache[categoryID] = string(jsonData)
 	}
 
+	CacheMutex.Lock()
 	MenuCache = tempMenuCache
+	CacheMutex.Unlock()
+
 	log.Println("Full menu reloaded")
 }
