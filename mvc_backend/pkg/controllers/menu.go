@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"log"
 	"github.com/kartikgoyal137/MVC/pkg/models"
 	"github.com/gorilla/mux"
 	"github.com/kartikgoyal137/MVC/pkg/types"
@@ -67,6 +68,7 @@ func (h *MenuHandler) MenuByCategory(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
+	log.Printf("Cache miss for product ID: %d, fetching from database", productID)
 
 	utils.UnMarshal(w, http.StatusOK, cat)
 }
